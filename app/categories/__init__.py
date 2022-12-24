@@ -1,0 +1,1 @@
+from app.categories.models import CategoryModel
