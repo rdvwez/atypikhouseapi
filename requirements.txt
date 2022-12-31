@@ -25,3 +25,4 @@ faker
 injector
 flask_restful
 flask-uploads
+pytest
