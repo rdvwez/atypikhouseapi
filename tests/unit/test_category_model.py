@@ -16,6 +16,20 @@ class CategoryTest(TestCase):
         self.assertEqual(True,cat.show)
         self.assertEqual("cabane dans les arbres", cat.libelle)
 
+    def test_create_category_Displayable(self):
+        cat = CategoryModel(
+            libelle="cabane dans les arbres", 
+            show=True)
+
+        self.assertTrue(cat.show)
+
+    def test_create_category_not_Displayable(self):
+        cat = CategoryModel(
+            libelle="cabane dans les arbres", 
+            show=False)
+
+        self.assertFalse(cat.show)
+
     def test_create_category_without_libelle(self):
         cat = CategoryModel( show=True)
 

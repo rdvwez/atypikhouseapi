@@ -23,8 +23,8 @@ class UserModel(db.Model):
     values = db.relationship("ValueModel", back_populates="user", lazy = "dynamic")
     images = db.relationship("ImageModel", back_populates="user", lazy = "dynamic")
 
-    def __repr__(self) -> str:
-        return str(self.__dict__)
+    def __repr__(self) -> dict:
+        return self.__dict__
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

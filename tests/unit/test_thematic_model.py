@@ -59,11 +59,29 @@ class ThematicTest(TestCase):
             longitude = 58.25669,
         )
 
-        cat = ThematicModel(
+        them = ThematicModel(
             id=1,
             libelle="romantiques", 
             show=True,
             houses = [house]
         )
 
-        self.assertEqual(cat.__repr__().get("houses"), True)
+        self.assertEqual(them.__repr__().get("houses"), True)
+
+    def test_create_thematic_Displayable(self):
+        them = ThematicModel(
+            id=1,
+            libelle="romantiques", 
+            show=True
+        )
+
+        self.assertTrue(them.show)
+
+    def test_create_thematic_not_Displayable(self):
+        them = ThematicModel(
+            id=1,
+            libelle="romantiques", 
+            show=False
+        )
+
+        self.assertFalse(them.show)
