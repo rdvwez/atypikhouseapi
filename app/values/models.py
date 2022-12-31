@@ -14,8 +14,8 @@ class ValueModel(db.Model):
     property_object = db.relationship("PropertyModel", back_populates = "values")
     user = db.relationship("UserModel", back_populates = "values")
 
-    def __repr__(self) -> str:
-        return str(self.__dict__)
+    def __repr__(self) -> dict:
+        return self.__dict__
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

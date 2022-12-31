@@ -34,9 +34,9 @@ class CategoryTest(TestCase):
 
     def test_repr(self):
         cat = CategoryModel(libelle="cabane dans les arbres", show=True)
-        categiry_dict_representation = cat.__repr__()
-        del categiry_dict_representation["_sa_instance_state"]
-        self.assertEqual(categiry_dict_representation, {"libelle":"cabane dans les arbres", "show":True})
+        category_dict_representation = cat.__repr__()
+        del category_dict_representation["_sa_instance_state"]
+        self.assertEqual(category_dict_representation, {"libelle":"cabane dans les arbres", "show":True})
 
     def test_category_with_propertie(self):
 
