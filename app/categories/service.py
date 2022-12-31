@@ -16,7 +16,7 @@ class CategoryService:
          self.category_repository = CategoryRepository()
 
 
-    def get_all_categories(self):
+    def get_all_categories(self)-> List[CategoryModel]:
         """
         Return all categories
         :return: a list of Category objects
