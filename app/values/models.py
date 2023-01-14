@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import unique
+from app.properties.models import PropertyModel
 
 from app.db import db
 

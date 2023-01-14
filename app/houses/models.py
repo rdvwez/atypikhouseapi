@@ -4,13 +4,15 @@ from enum import unique
 from app.db import db
 from app.users.models import UserModel
 from app.thematics.models import ThematicModel
+from app.values.models import ValueModel
+from app.images.models import ImageModel
 
 class HouseModel(db.Model):
 
     __tablename__ = "houses"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    libelle = db.Column(db.String(40), primary_key=True, unique=True, nullable=False)
+    libelle = db.Column(db.String(40), unique=True, nullable=False)
     description = db.Column(db.Text, nullable=True)
     # part_number = db.Column(db.Integer  , nullable=False)
     bedroom_number = db.Column(db.Integer, nullable=False)
