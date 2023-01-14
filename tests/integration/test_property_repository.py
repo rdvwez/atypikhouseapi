@@ -8,7 +8,7 @@ from tests.base_test import BaseTest
 category_repository = CategoryRepository()
 property_repository = PropertyRepository()
 
-class CategoryTest(BaseTest):
+class PropertyTest(BaseTest):
 
     def test_crud(self) -> None:
 
