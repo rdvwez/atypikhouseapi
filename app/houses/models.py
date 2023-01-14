@@ -12,7 +12,7 @@ class HouseModel(db.Model):
     __tablename__ = "houses"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    libelle = db.Column(db.String(40), primary_key=True, unique=True, nullable=False)
+    libelle = db.Column(db.String(40), unique=True, nullable=False)
     description = db.Column(db.Text, nullable=True)
     # part_number = db.Column(db.Integer  , nullable=False)
     bedroom_number = db.Column(db.Integer, nullable=False)
