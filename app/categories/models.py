@@ -1,6 +1,7 @@
 from typing import Dict, Union, List
 from datetime import datetime
 from enum import unique
+from app.houses.models import HouseModel
 
 from app.db import db
 

@@ -4,6 +4,8 @@ from enum import unique
 from app.db import db
 from app.users.models import UserModel
 from app.thematics.models import ThematicModel
+from app.values.models import ValueModel
+from app.images.models import ImageModel
 
 class HouseModel(db.Model):
 

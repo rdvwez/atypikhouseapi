@@ -42,7 +42,7 @@ class ThematicLimitedSchema(Schema):
 ######Property Schema ######################################
 class PlainPropertySchema(Schema):
     id = fields.Int(dump_only=True)
-    description = fields.Str(require=False)
+    description = fields.Str(metadata= {'require': False})
     libelle = fields.Str(required=True)
     is_required = fields.Boolean(required=True)
 
@@ -122,7 +122,7 @@ class PlainHouseSchema(Schema):
     show = fields.Bool(required=True)
 
     libelle = fields.Str(required=True)
-    description = fields.Str(require=False)
+    description = fields.Str(metadata= {'require': False})
     # part_number = fields.Integer(required=False)
     bedroom_number = fields.Integer(required=False)
     person_number = fields.Integer(required=False)
@@ -142,7 +142,7 @@ class PlainHouseSchema(Schema):
 class HouseUpdateSchema(Schema):
     show = fields.Bool(required=True)
     libelle = fields.Str(required=True)
-    description = fields.Str(require=False)
+    description = fields.Str(metadata= {'require': False})
     # part_number = fields.Integer(required=False)
     bedroom_number = fields.Integer(required=False)
     person_number = fields.Integer(required=False)
@@ -177,7 +177,7 @@ class HouseLimitedSchema(Schema):
     price = fields.Integer(required=False)
     person_number = fields.Integer(required=False)
     parking_distance = fields.Integer(nullable=False)
-    description = fields.Str(require=False)
+    description = fields.Str(metadata= {'require': False})
 
 ######################### images schemas#######################
 
@@ -197,9 +197,9 @@ class FileStorageField(fields.Field):
 
 class PlainImageSchema(Schema):
     image = FileStorageField(required=True)
-    extension = fields.Str(require=True)
-    path = fields.Str(require=True)
-    basename = fields.Str(require=True)
+    extension = fields.Str(metadata= {'require': False})
+    path = fields.Str(metadata= {'require': False})
+    basename = fields.Str(metadata= {'require': False})
     is_avatar = fields.Boolean(required=True)
 
 class ImageSchema(PlainImageSchema):
