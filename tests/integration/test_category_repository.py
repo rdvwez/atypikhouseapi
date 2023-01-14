@@ -20,5 +20,3 @@ class CategoryTest(BaseTest):
             category_repository.delete(cat)
             category_repository.commit()
             self.assertEqual(len(category_repository.get_all()), 0)
-
-            
