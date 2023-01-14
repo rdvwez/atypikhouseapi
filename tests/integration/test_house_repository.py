@@ -41,9 +41,11 @@ class HouseTest(BaseTest):
             )
 
             category_repository.save(cat)
-            thematic_repository.save(them)
-            user_repository.save(user)
             category_repository.commit()
+            thematic_repository.save(them)
+            thematic_repository.commit()
+            user_repository.save(user)
+            user_repository.commit()
 
             house = HouseModel(
             libelle = "libelle",
