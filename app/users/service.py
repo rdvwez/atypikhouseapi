@@ -1,3 +1,4 @@
+from typing import Dict
 import traceback
 from requests import Response, post
 from flask import abort, render_template, make_response, redirect, request, url_for
@@ -33,7 +34,7 @@ class UserService:
         user = UserModel(email=user_data["email"], password = pbkdf2_sha256.hash(user_data["password"]))
         try:
             self.user_repository.save(user)
-            self.user_repository.commit()
+            # self.user_repository.commit()
 
             user = self.user_repository.get_user_by_email(email = user.email)
             self.send_confirmation_email( user_id = user.email, email = user.email)
@@ -41,7 +42,7 @@ class UserService:
         except MailGunException as e:
 
             self.user_repository.delete(user)
-            self.user_repository.commit()
+            # self.user_repository.commit()
             return {"message": str(e)}, 500
 
         except:
@@ -57,12 +58,12 @@ class UserService:
             if user.is_activated:
 
             # user.is_authenticated = True
-                additional_claims = {"roles": user.roles}
+                additional_claims = {"is_custom": user.is_custom, "is_owner":user.is_owner, "is_admin":user.is_admin}
                 access_token = create_access_token(identity=user.id, additional_claims=additional_claims, fresh=True)
                 refresh_token = create_refresh_token(identity=user.id)
             
                 return {"access_token":access_token, "refresh_token":refresh_token}
-            return {"message": f"You have not confirme registration, please check your email <{user.first_name}>."}, 400
+            return {"message": f"You have not confirme registration, please check your email <{user.firstname}>."}, 400
         
         abort(401, message="invalid credentieals.")
     
@@ -120,7 +121,20 @@ class UserService:
 
         user.is_activated = True
         self.user_repository.save(user)
-        self.user_repository.commit()
+        # self.user_repository.commit()
         # return redirect("http//localhost:5000", 302)  pour rediriger
         headers = {"Content-type": "text/html"}
         return make_response(render_template("confirmation_page.html", email = user.email), 200, headers)
+    
+    def set_password(self, user_json) -> None:
+        user = self.user_repository.get_user_by_email_or_username({"username":user_json["username"]})
+
+        if not user:
+            return {"message": "user not found"}, 404
+        
+        user.password = user_json["password"]
+        user.is_activated = True
+        self.user_repository.save(user)
+        # self.user_repository.commit()
+
+        return {"message":"user password updated successfully"}, 201

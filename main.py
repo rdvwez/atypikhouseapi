@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 from app.db import db
 from blocklist import BLOCKLIST
+from oa import oauth
 # from fixtures import fixtures_loader
 from fixtures.fixtures_loader import load_all_fixtures
 from flask_uploads import configure_uploads, patch_request_class,  UploadSet, IMAGES
@@ -22,6 +23,7 @@ from app.thematics.ressources import blp as ThematicBlueprint
 from app.properties.ressources import blp as PropertyBlueprint
 from app.values.ressources import blp as ValuesBlueprint
 from app.images.ressources import blp as ImagesBlueprint
+from app.sso.ressources import blp as SsoBlueprint
 
 # from . import default_config
 
@@ -39,6 +41,8 @@ def creat_app(db_url=None):
     # logging.basicConfig(level=logging.DEBUG, format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     app.config["PROPAGATE_EXCEPTIONS"] = True
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.config['SECRET_KEY'] = "this-app_app-secret"
     app.config["API_TITLE"] = "Hatypik Rest api"
     app.config["API_VERSION"] = "v1"
     app.config["OPENAPI_VERSION"] = "3.0.3"
@@ -53,6 +57,7 @@ def creat_app(db_url=None):
 
     api = Api(app)
 
+    
     app.config["JWT_SECRET_KEY"] = os.environ.get("APP_SECRET_KEY")
     jwt = JWTManager(app)
 
@@ -80,13 +85,14 @@ def creat_app(db_url=None):
 
     @app.before_first_request
     def create_tables_load_fixtures():
+        # load_all_fixtures()
         if (db.create_all()):
             app.logger.info('Database tables has been created with success')
-            load_all_fixtures()
+        # load_all_fixtures()
             # app.logger.info('Fixtures have been loaded successfully')
         # if(load_all_fixtures()):
         #     # pass
-            # app.logger.info('Fixtures have been loaded successfully')
+        #     app.logger.info('Fixtures have been loaded successfully')
             
 
 
@@ -98,5 +104,6 @@ def creat_app(db_url=None):
     api.register_blueprint(PropertyBlueprint)
     api.register_blueprint(ValuesBlueprint)
     api.register_blueprint(ImagesBlueprint)
+    api.register_blueprint(SsoBlueprint)
 
     return app
