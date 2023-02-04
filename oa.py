@@ -18,8 +18,8 @@ facebook = oauth.remote_app('facebook',
     request_token_url=None,
     access_token_url='/oauth/access_token',
     authorize_url='https://www.facebook.com/dialog/oauth',
-    consumer_key="FACEBOOK_APP_ID",
-    consumer_secret="FACEBOOK_APP_SECRET",
+    consumer_key="783711930077559",
+    consumer_secret="c61a6247a34c6db886705cbf2c9feb4b",
     request_token_params={'scope': 'email'}
 
 )
@@ -44,5 +44,10 @@ def get_twitter_token():
 
 @google.tokengetter
 def get_google_token():
+    if "access_token" in g:
+        return g.access_token
+
+@facebook.tokengetter
+def get_facebook_token():
     if "access_token" in g:
         return g.access_token
