@@ -4,6 +4,17 @@ from flask_oauthlib.client import OAuth
 
 oauth = OAuth()
 
+github = oauth.remote_app('github',
+    base_url='https://api.github.com/',
+    access_token_url='https://github.com/login/oauth/access_token',
+    authorize_url='https://github.com/login/oauth/authorize',
+    consumer_key=os.getenv("GITHUB_COSUMMER_KEY"),
+    consumer_secret=os.getenv("GITHUB_COSUMMER_SECRET"),
+    request_token_params={"scope":"user:email"},
+    request_token_url=None,
+    access_token_method="POST"
+)
+
 twitter = oauth.remote_app('twitter',
     base_url='https://api.twitter.com/1/',
     request_token_url='https://api.twitter.com/oauth/request_token',
@@ -49,5 +60,10 @@ def get_google_token():
 
 @facebook.tokengetter
 def get_facebook_token():
+    if "access_token" in g:
+        return g.access_token
+
+@github.tokengetter
+def get_github_token():
     if "access_token" in g:
         return g.access_token

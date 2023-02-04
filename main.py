@@ -30,6 +30,7 @@ from app.sso.ressources import blp as SsoBlueprint
 def creat_app(db_url=None):
     app = Flask(__name__, instance_relative_config=True)
 
+    #TODO move the load_dotenv function before calling  'oauth'
     load_dotenv(".env", verbose=True)
     app.config.from_object("default_config")
     app.config.from_envvar("APPLICATION_SETTINGS")
