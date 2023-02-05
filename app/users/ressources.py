@@ -1,6 +1,7 @@
+from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint
-from flask_jwt_extended import jwt_required   
+from flask_jwt_extended import jwt_required
 
 from app.users.service import UserService
 from app.users.models import UserModel
@@ -22,7 +23,7 @@ class UserRegister(MethodView):
         self.user_service.register(user_data)
 
 @blp.route("/login")
-class UserLogn(MethodView):
+class UserLogin(MethodView):
 
     # @inject
     def __init__(self):
@@ -82,7 +83,7 @@ class UserList(MethodView):
         # return "ERT"
         return self.user_service.get_all_user()
 
-    #TODO: Ne peut qu'aaccer à cette routr l'admin connecté
+    #TODO: Ne peut acceder à cette route l'admin connecté
     @jwt_required()
     @blp.arguments(UserSchema)
     @blp.response(200, UserSchema)
@@ -102,4 +103,16 @@ class UserConfirm(MethodView):
     # @blp.response(200, UserSchema)
     def get(self, user_id):
         return self.user_service.confirm_user(user_id)
-        
+
+@blp.route("/user/password")
+class SetPassword(MethodView):
+
+    def __init__(self):
+        self.user_service = UserService()
+    
+    @jwt_required(fresh=True)
+    @blp.arguments(UserSchema)
+    def post(self):
+        user_json = request.get_json()
+        # user_data = user_schema.load()
+        self.user_service.set_password(user_json)

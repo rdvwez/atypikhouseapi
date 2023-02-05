@@ -13,11 +13,11 @@ class UserRepository:
     def get_user_by_id(self, user_id: int) -> UserModel:
         return UserModel.query.get_or_404(user_id)
 
-    def get_user_by_email_or_username(self, user_data:Dict[str, None])-> UserModel:
+    def get_user_by_email_or_username(self, user_data:Dict[str, str])-> UserModel:
         return UserModel.query.filter(
             or_(
                 UserModel.email == user_data.get("email", None),
-                UserModel.username == user_data["username"],
+                UserModel.username == user_data.get("username"),
             )).first()
 
     def get_user_by_email(self, email: str)-> UserModel:
@@ -25,6 +25,7 @@ class UserRepository:
 
     def save(self, user):
         db.session.add(user)
+        self.commit()
 
     def delete(self, user):
         db.session.delete(user)

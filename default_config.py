@@ -8,6 +8,9 @@ JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 JWT_BLOCKLIST_ENABLED = True
 JWT_BLACKLIST_TOKEN_CHECKS = ["access", "refesh"]
 UPLOADED_IMAGES_DEST = os.path.join("static", "images")
+GOOGLE_OAUTH_CLIENT_ID = "794179832332-3jkq8ia1ng9s4ej8q36c83umd05p6r1g.apps.googleusercontent.com"
+GOOGLE_OAUTH_CLIENT_SECRET = "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"
+
 
 # API_TITLE= "Hatypik Rest api"
 # OPENAPI_VERSION = "3.0.3"
