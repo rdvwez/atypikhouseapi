@@ -24,6 +24,7 @@ from app.properties.ressources import blp as PropertyBlueprint
 from app.values.ressources import blp as ValuesBlueprint
 from app.images.ressources import blp as ImagesBlueprint
 from app.sso.ressources import blp as SsoBlueprint
+from app.reservations.ressources import blp as ReservationBlueprint
 
 # from . import default_config
 
@@ -106,5 +107,6 @@ def creat_app(db_url=None):
     api.register_blueprint(ValuesBlueprint)
     api.register_blueprint(ImagesBlueprint)
     api.register_blueprint(SsoBlueprint)
+    api.register_blueprint(ReservationBlueprint)
 
     return app

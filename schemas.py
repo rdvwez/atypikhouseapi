@@ -1,6 +1,8 @@
 from typing import Union
+from enum import Enum
 from marshmallow import Schema, fields
 from werkzeug.datastructures import FileStorage
+from sqlalchemy.dialects.postgresql import ENUM
 
 
 ####### Category schemas ##############################################
@@ -207,6 +209,37 @@ class ImageSchema(PlainImageSchema):
     user_id = fields.Int(required = False, load_only = True)
     house = fields.Nested(lambda: HouseLimitedSchema(), dump_only = True)
     user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
+
+######################### reservations schemas#######################
+class ReservationStatus(Enum):
+    PENDING = 'pending'
+    CANCELED = 'canceled'
+    COMPLETED = 'completed'
+    FAILED = 'failed'
+    DELETED = 'deleted'
+
+class PlainReservationSchema(Schema):
+    id = fields.Str(dump_only=True)
+    status = fields.Enum(ReservationStatus)
+    start_date = fields.DateTime(required=True)
+    end_date = fields.DateTime(metadata= {'require': False})
+
+class ReservationUpdateSchema(Schema):
+    status = fields.Enum(ReservationStatus)
+    start_date = fields.DateTime(required=True)
+    end_date = fields.DateTime(metadata= {'require': False})
+    
+
+class ReservationSchema(PlainReservationSchema):
+    house_id = fields.Int(required = False, load_only = True)
+    user_id = fields.Int(required = False, load_only = True)
+    house = fields.Nested(lambda: HouseLimitedSchema(), dump_only = True)
+    user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
+
+class ReservationLimitedSchema(Schema):
+    id = fields.Str(dump_only=True)
+    status = fields.Enum(ReservationStatus)
+    amount = fields.Float(nullable=True)
 
 
 

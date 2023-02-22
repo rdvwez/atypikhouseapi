@@ -47,7 +47,7 @@ class CategoryService:
             self.category_repository.commit()
             return category
         except:
-            abort(404, f"A catgory with id:{category_id} doesn't exist")
+            abort(404, f"A category with id:{category_id} doesn't exist")
 
 
     def delete_category(self, category_id):

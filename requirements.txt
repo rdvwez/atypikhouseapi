@@ -27,3 +27,4 @@ flask_restful
 flask-uploads
 pytest
 Flask-OAuthlib
+stripe
