@@ -9,7 +9,7 @@ from schemas import UserSchema, UserRegisterSchema
 
 
 
-blp = Blueprint("Users","users",description="Operations on users")
+blp = Blueprint("Users","users",description="Operations on users",url_prefix="/api")
 
 @blp.route("/register")
 class UserRegister(MethodView):

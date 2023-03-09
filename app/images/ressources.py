@@ -14,7 +14,7 @@ from schemas import ImageSchema
 
 
 
-blp = Blueprint("Images",__name__,description="Operations on images")
+blp = Blueprint("Images",__name__,description="Operations on images", url_prefix="/api")
 
 
 @blp.route("/image<string:image_id>")

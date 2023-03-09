@@ -45,7 +45,7 @@ class ReservationService:
         construct an reservation and talk to the strip API to make a charge.
         """
         try:
-            reservation.amount = (reservation.end_date - reservation.start_date).days
+            # reservation.amount = (reservation.end_date - reservation.start_date).days
             self.reservation_repository.save(reservation)
             self.reservation_repository.commit()
             description = f"This reservation costs {reservation.amount}, starts {reservation.start_date} an ends {reservation.end_date} "

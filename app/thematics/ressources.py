@@ -13,7 +13,7 @@ from schemas import ThematicSchema, ThematicUpdateSchema, HouseSchema
 
 
 
-blp = Blueprint("Thematics","thematics",description="Operations on thematics")
+blp = Blueprint("Thematics","thematics",description="Operations on thematics",url_prefix="/api")
 
 
 @blp.route("/thematic/<string:thematic_id>/house")
@@ -36,7 +36,7 @@ class Category(MethodView):
     def __init__(self):
         self.thematic_service = ThematicService()
 
-    # @jwt_required()
+    @jwt_required()
     @blp.response(200, ThematicSchema)
     def get(self, thematic_id:int):
         return self.thematic_service.get_thematic_by_id(thematic_id) 
@@ -46,7 +46,7 @@ class Category(MethodView):
         return self.thematic_service.delete_thematic(thematic_id)
 
     #TODO: il faut être connecté et admin pour acceder à cette route
-    @jwt_required()
+    @jwt_required(fresh=True)
     @blp.arguments(ThematicUpdateSchema)
     @blp.response(200, ThematicSchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
@@ -62,18 +62,17 @@ class ThematicList(MethodView):
         self.thematic_service = ThematicService()
 
 
-    # @jwt_required()
     @blp.response(200, ThematicSchema(many=True))
     def get(self):
         # return "ERT"
         return self.thematic_service.get_all()
 
-    @jwt_required()
+    @jwt_required(fresh=True)
     @blp.arguments(ThematicSchema)
-    @blp.response(200, ThematicSchema)
+    @blp.response(201, ThematicSchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
     def post(self, thematic_data):
         thematic = ThematicModel(**thematic_data)
-        self.thematic_service.create_thematic(thematic)
-        return thematic
+        return self.thematic_service.create_thematic(thematic)
+        
     

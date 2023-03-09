@@ -1,4 +1,5 @@
-from typing import List
+from typing import List, Mapping
+import json
 
 from app.db import db
 
@@ -8,8 +9,14 @@ class CategoryRepository:
 
     """Persistence of categories"""
 
-    def get_all(self) -> List[CategoryModel]:
-        return CategoryModel.query.order_by(CategoryModel.id).all()
+    def get_all(self) -> str:
+        # return CategoryModel.query.order_by(CategoryModel.id).all()
+        category = CategoryModel.query.order_by(CategoryModel.id).all()
+        category2 = str(category) 
+        # breakpoint()
+        # print(category)
+        # print(category2)
+        return category
 
     def get_category_by_id(self, category_id: int) -> CategoryModel:
         category = CategoryModel.query.get_or_404(category_id)

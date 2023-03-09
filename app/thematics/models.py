@@ -15,8 +15,8 @@ class ThematicModel(db.Model):
     houses = db.relationship("HouseModel", back_populates="thematic", lazy = "dynamic")
     
 
-    def __repr__(self) -> dict:
-        return self.__dict__
+    def __repr__(self) -> str:
+        return str(self.__dict__)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

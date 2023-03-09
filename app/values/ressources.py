@@ -9,7 +9,7 @@ from app.values.service import ValueService
 from schemas import ValueSchema, ValueUpdateSchema, ValueSchema
 
 
-blp = Blueprint("Values","Value",description="Operations on Values")
+blp = Blueprint("Values","Value",description="Operations on Values",url_prefix="/api")
 
 @blp.route("/value/<int:value_id>")
 class Category(MethodView):

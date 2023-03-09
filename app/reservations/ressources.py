@@ -10,7 +10,7 @@ from app.reservations.service import ReservationService
 from schemas import ReservationSchema, ReservationUpdateSchema
 
 
-blp = Blueprint("Reservations","reservations",description="Operations on reservations")
+blp = Blueprint("Reservations","reservations",description="Operations on reservations", url_prefix="/api")
 
 
 # @blp.route("/category/<string:category_id>/house")
@@ -74,8 +74,8 @@ class ReservationList(MethodView):
     # category_data contain the json wich is the validated fileds that the schamas requested
     def post(self, data:Mapping[str, Mapping]):
         """
-        Expected for token and a rrservatins data from the request body
-        construct an reservation and talk to the strip API to make a charge.
+        Expected for token and a reservations data from the request body
+        construct a reservation and talk to the strip API to make a charge.
         """
         reservation = ReservationModel(**data["reservation_data"])
         # print(category)

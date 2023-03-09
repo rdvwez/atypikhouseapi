@@ -11,7 +11,7 @@ from app.properties.service import PropertyService
 from schemas import PropertySchema, PropertyUpdateSchema, HouseSchema
 
 
-blp = Blueprint("Properties",__name__,description="Operations on Properties")
+blp = Blueprint("Properties",__name__,description="Operations on Properties", url_prefix="/api")
 
 
 @blp.route("/property/<int:property_id>")

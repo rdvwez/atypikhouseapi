@@ -33,10 +33,10 @@ class ReservationModel(db.Model):
     end_date = db.Column(db.DateTime)
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
-    user = db.relationship("UserModel", back_populates = "reservations")
+    user = db.relationship("UserModel", )
 
     house_id = db.Column(db.Integer, db.ForeignKey("houses.id"), nullable = True)
-    houses = db.relationship("HouseModel", back_populates="reservations")
+    house = db.relationship("HouseModel", )
 
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())

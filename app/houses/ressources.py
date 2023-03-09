@@ -10,7 +10,7 @@ from app.houses.models import HouseModel
 
 
 
-blp = Blueprint("Houses",__name__,description="Operations on houses")
+blp = Blueprint("Houses",__name__,description="Operations on houses",url_prefix="/api")
 
 
 

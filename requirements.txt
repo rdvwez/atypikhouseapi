@@ -28,3 +28,4 @@ flask-uploads
 pytest
 Flask-OAuthlib
 stripe
+coverage==5.4

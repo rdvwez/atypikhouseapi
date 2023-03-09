@@ -8,7 +8,7 @@ from app.users.repository import UserRepository
 from app.users.models import UserModel
 
 
-blp = Blueprint("Sso",__name__,description="Operations on sso login")
+blp = Blueprint("Sso",__name__,description="Operations on sso login",url_prefix="/api")
 
 
 @blp.route("/login/google")

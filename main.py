@@ -1,7 +1,6 @@
 import os
 import logging
 
-
 from flask import Flask, jsonify
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
@@ -28,13 +27,13 @@ from app.reservations.ressources import blp as ReservationBlueprint
 
 # from . import default_config
 
-def creat_app(db_url=None):
+def create_app(db_url=None):
     app = Flask(__name__, instance_relative_config=True)
 
     #TODO move the load_dotenv function before calling  'oauth'
     load_dotenv(".env", verbose=True)
     app.config.from_object("default_config")
-    app.config.from_envvar("APPLICATION_SETTINGS")
+    # app.config.from_envvar("APPLICATION_SETTINGS")
     
     IMAGE_SET = UploadSet("images", IMAGES) 
     patch_request_class(app, 10 * 1024 * 1024) # 10 Mb max size upload
@@ -49,7 +48,7 @@ def creat_app(db_url=None):
     app.config["API_VERSION"] = "v1"
     app.config["OPENAPI_VERSION"] = "3.0.3"
     app.config["OPENAPI_URL_PREFIX"] = "/"
-    app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
+    app.config["OPENAPI_SWAGGER_UI_PATH"] = "/api"
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
     app.config["SQLALCHEMY_DATABASE_URI"] =db_url or  os.getenv("DATABASE_URL","sqlite:///data.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -84,18 +83,23 @@ def creat_app(db_url=None):
     def invalid_torken_cillback(error):
         return (jsonify({"message":"Signature verification failled.", "error": "invalid token"}), 401,)
 
+    ####################################
+    # @app.before_first_request
+    # def create_tables_load_fixtures():
+    #     # db.create_all()
+    #     app.logger.info('Database tables has been created with success')
+    #     # load_all_fixtures()
+    #     app.logger.info('Fixtures have been loaded successfully')
+    #################################################
 
-    @app.before_first_request
-    def create_tables_load_fixtures():
-        # load_all_fixtures()
-        if (db.create_all()):
-            app.logger.info('Database tables has been created with success')
-        # load_all_fixtures()
-            # app.logger.info('Fixtures have been loaded successfully')
-        # if(load_all_fixtures()):
-        #     # pass
-        #     app.logger.info('Fixtures have been loaded successfully')
-            
+    
+    # initialisation des tables et chargement des données initiales
+    # def init_db():
+    #     with app.app_context():
+    #         db.create_all()
+    #         load_all_fixtures()
+
+    # app.init_app(init_db)
 
 
 

@@ -19,8 +19,15 @@ class CategoryModel(db.Model):
     houses = db.relationship("HouseModel", back_populates="category", lazy = "dynamic")
     properties = db.relationship("PropertyModel", back_populates="category", lazy = "dynamic")
 
-    def __repr__(self) -> dict:
-        return self.__dict__
+    def __repr__(self) -> str:
+        # return self.__dict__
+        return str(
+            {
+            'id':self.id,
+            "libelle":self.libelle,
+            "show":self.show,
+            }
+        )
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)

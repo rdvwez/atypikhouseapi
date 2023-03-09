@@ -14,6 +14,7 @@ class UserRepository:
         return UserModel.query.get_or_404(user_id)
 
     def get_user_by_email_or_username(self, user_data:Dict[str, str])-> UserModel:
+        
         return UserModel.query.filter(
             or_(
                 UserModel.email == user_data.get("email", None),
@@ -23,18 +24,18 @@ class UserRepository:
     def get_user_by_email(self, email: str)-> UserModel:
          return UserModel.query.get_or_404(email)
 
-    def save(self, user):
+    def save(self, user:UserModel)->None:
         db.session.add(user)
         self.commit()
 
-    def delete(self, user):
+    def delete(self, user:UserModel)->None:
         db.session.delete(user)
 
-    def flush(self):
+    def flush(self)->None:
         db.session.flush()
 
-    def commit(self):
+    def commit(self)->None:
         db.session.commit()
 
-    def rollback(self):
+    def rollback(self)->None:
         db.session.rolback()
