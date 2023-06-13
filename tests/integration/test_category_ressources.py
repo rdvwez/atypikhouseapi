@@ -9,8 +9,8 @@ def access_admin_expired_token():
 def  test_get_all_categories(client, init_database):
     response = client.get("/api/category")
     assert response.status_code == 200
-    expected_categories = [{'houses': [], 'id': 1, 'libelle': 'bulle', 'properties': [], 'show': True}, {'houses': [], 'id': 2, 'libelle': 'cabane', 'properties': [], 'show': False}]
-    assert len(response.json) == 2
+    expected_categories = [{'houses': [{'area': 8, 'description': 'Good first house', 'id': 1, 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'water': True}], 'id': 1, 'libelle': 'bulle', 'properties': [{'id': 1, 'libelle': 'wifi'}], 'show': True}, {'houses': [{'area': 12, 'description': 'Good second house', 'id': 2, 'libelle': 'second house', 'parking_distance': 5, 'person_number': 3, 'power': True, 'price': 60, 'water': False}], 'id': 2, 'libelle': 'cabane', 'properties': [{'id': 2, 'libelle': 'Air conditioner'}, {'id': 3, 'libelle': 'Ta be deleted'}], 'show': False}, {'houses': [], 'id': 3, 'libelle': 'To be deleted', 'properties': [], 'show': False}]
+    assert len(response.json) == 3
     assert response.json == expected_categories
 
 def test_get_category(client, access_admin_token):
@@ -18,7 +18,7 @@ def test_get_category(client, access_admin_token):
     response = client.get("/api/category/1", headers={"Authorization": f"Bearer {access_admin_token}"})
     assert response.status_code == 200
     assert response.json["id"] == 1
-    assert response.json == {'houses': [], 'id': 1, 'libelle': 'bulle', 'properties': [], 'show': True}
+    assert response.json == {'houses': [{'area': 8, 'description': 'Good first house', 'id': 1, 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'water': True}], 'id': 1, 'libelle': 'bulle', 'properties': [{'id': 1, 'libelle': 'wifi'}], 'show': True}
 
 def test_get_category_unauthorized(client, access_owner_token):
     # En tant que client non propriétaire, on ne peut pas récupérer une catégorie
@@ -28,7 +28,7 @@ def test_get_category_unauthorized(client, access_owner_token):
 
 def test_delete_category(client, access_admin_token):
     # En tant qu'administrateur connecté, on peut supprimer une catégorie existante
-    response = client.delete("/api/category/2", headers={"Authorization": f"Bearer {access_admin_token}"})
+    response = client.delete("/api/category/3", headers={"Authorization": f"Bearer {access_admin_token}"})
     assert response.status_code == 204
 
 def test_delete_category_unauthorized(client, access_customer_token):
@@ -88,6 +88,6 @@ def test_create_category_with_bad_acess(client, access_owner_token):
 def test_get_houses_in_category(client, access_admin_token):
     response = client.get("/api/category/1/house", headers={"Authorization": f"Bearer {access_admin_token}"})
     assert response.status_code == 200
-    #TODO : add an assert when house will be added
+#     #TODO : add an assert when house will be added
 
 

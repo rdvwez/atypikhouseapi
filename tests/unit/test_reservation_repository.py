@@ -27,7 +27,7 @@ class ReservationTest(BaseTest):
             user = UserModel(
             email = "toto@gmail.com",
             password = "Le_passe_de_test",
-            is_custom = True,
+            is_customer = True,
             is_owner = False,
             is_admin = False,
         )

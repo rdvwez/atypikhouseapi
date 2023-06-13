@@ -6,9 +6,13 @@ from typing import List, Dict, Mapping
 from injector import inject
 from sqlalchemy.exc import SQLAlchemyError
 from stripe import error
+from flask_jwt_extended import get_jwt_identity
 
 from app.reservations.repository import ReservationRepository
 from app.reservations.models import ReservationModel
+from app.libs.decorators import owner_required, admin_required, customer_required
+from app.users.repository import UserRepository
+from app.houses.repository import HouseRepository
 
 CURRENCY = "eur"
 
@@ -17,15 +21,32 @@ class ReservationService:
     @inject
     def __init__(self):
          self.reservation_repository = ReservationRepository()
+         self.user_repository = UserRepository()
+         self.houseRepository = HouseRepository()
 
-
+    @customer_required
     def get_all_reservations(self)-> List[ReservationModel]:
         """
         Return all reservations
         :return: a list of Reservation objects
         """
+    
+        reservations  = self.reservation_repository.get_all()
+        curent_user = self.user_repository.get_user_by_id(get_jwt_identity())
+        if curent_user.is_customer:
+            return [reservation for reservation in reservations if reservation.user_id == curent_user.id ]
+            
+        elif curent_user.is_owner:
+            owner_reservation = []
+            for reservation in reservations:
+                house = self.houseRepository.get_house_by_id(reservation.house_id)
+                if house.user_id == curent_user.id:
+                    owner_reservation.append(reservation)
+            return owner_reservation 
+        
         return self.reservation_repository.get_all()
 
+    @customer_required
     def get_reservation_by_id(self, reservation_id: int) -> ReservationModel:
         # return self.reservation_repository.get_reservation_by_id(reservation_id)
         return self.reservation_repository.get_reservation_by_id(reservation_id)
@@ -39,9 +60,10 @@ class ReservationService:
             source= strip_token
         )
 
+    @customer_required
     def create_reservation(self, reservation:ReservationModel, strip_token:str):
         """
-        Expected for token and a rrservatins data from the request body
+        Expected for token and a reservatins data from the request body
         construct an reservation and talk to the strip API to make a charge.
         """
         try:
@@ -70,23 +92,29 @@ class ReservationService:
         except SQLAlchemyError:
             abort(500,"An error occurred while inserting the reservation")
 
+    @owner_required
     def update_reservation(self, reservation_id:int, reservation_data:Dict[str, None]):
+        
         try:
             reservation = self.reservation_repository.get_reservation_by_id(reservation_id)
-            # reservation.show = reservation_data.get("show", 0)
-            # reservation.libelle = reservation_data.get("libelle","Not define")
-            # self.reservation_repository.save(reservation)
-            # self.reservation_repository.commit()
-            return reservation
-        except:
+
+
+            reservation.end_date = reservation_data.get("end_date")
+            reservation.start_date = reservation_data.get("start_date")
+            reservation.status = reservation_data.get("status").value
+
+            self.reservation_repository.save(reservation)
+            self.reservation_repository.commit()
+            return reservation,200
+        except Exception as err:
             abort(404, f"A reservation with id:{reservation_id} doesn't exist")
 
-
+    @owner_required
     def delete_reservation(self, reservation_id):
         try:
             reservation = self.reservation_repository.get_reservation_by_id(reservation_id)
             self.reservation_repository.delete(reservation)
             self.reservation_repository.commit()
-            return  {"message":"reservation deleted"}, 200
+            return  {"message":"reservation deleted"}, 204
         except:
             abort(404, f"A reservation with id:{reservation_id} doesn't exist")

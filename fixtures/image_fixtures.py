@@ -25,7 +25,9 @@ class  ImageFixtures:
                 image = ImageModel(
                                 path= self.path.format(random.randint(150,220),random.randint(150,200)), 
                                 basename=basename,
-                                extension=os.path.splitext(basename)[1], 
+                                extension=os.path.splitext(basename)[1],
+                                type_mime = "image/jpeg",
+                                size = random.randint(150,10000) ,
                                 user_id=random.randint(2,3), 
                                 house_id= house_counter)
 

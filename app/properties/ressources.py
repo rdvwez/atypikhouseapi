@@ -21,17 +21,17 @@ class Property(MethodView):
     def __init__(self):
         self.property_service = PropertyService()
 
-    # @jwt_required()
+    @jwt_required()
     @blp.response(200, PropertySchema)
-    def get(self, property_id):
+    def get(self, property_id:int):
         return self.property_service.get_property_by_id(property_id) 
 
     @jwt_required()
     def delete(self, property_id):
         return self.property_service.delete_property(property_id)
 
-    #TODO: il faut être connecté et admin pour acceder à cette route
-    @jwt_required()
+    
+    @jwt_required(fresh=True)
     @blp.arguments(PropertyUpdateSchema)
     @blp.response(200, PropertySchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
@@ -47,18 +47,16 @@ class PropertyList(MethodView):
         self.property_service = PropertyService()
 
 
-    # @jwt_required()
     @blp.response(200, PropertySchema(many=True))
     def get(self):
-        # return "ERT"
         return self.property_service.get_all_properties()
 
-    @jwt_required()
+    @jwt_required(fresh=True)
     @blp.arguments(PropertySchema)
-    @blp.response(200, PropertySchema)
+    @blp.response(201, PropertySchema)
     # property_data contain the json wich is the validated fileds that the schamas requested
     def post(self, property_data):
         property_object = PropertyModel(**property_data)
-        self.property_service.create_property(property_object)
-        return property_object
+        return self.property_service.create_property(property_object)
+        
     

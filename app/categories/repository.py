@@ -12,10 +12,6 @@ class CategoryRepository:
     def get_all(self) -> str:
         # return CategoryModel.query.order_by(CategoryModel.id).all()
         category = CategoryModel.query.order_by(CategoryModel.id).all()
-        category2 = str(category) 
-        # breakpoint()
-        # print(category)
-        # print(category2)
         return category
 
     def get_category_by_id(self, category_id: int) -> CategoryModel:

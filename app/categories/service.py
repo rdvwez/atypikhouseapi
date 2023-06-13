@@ -16,8 +16,8 @@ class CategoryService:
 
     @inject
     def __init__(self):
-         self.category_repository = CategoryRepository()
-         self.user_repository = UserRepository()
+        self.category_repository = CategoryRepository()
+        self.user_repository = UserRepository()
 
 
     def get_all_categories(self):
@@ -28,7 +28,7 @@ class CategoryService:
         
         return self.category_repository.get_all()
 
-    def get_category_by_id(self, category_id: int) -> CategoryModel:
+    def get_category_by_id(self, category_id: int) -> CategoryModel :
         curent_user = self.user_repository.get_user_by_id(get_jwt_identity())
         if curent_user.is_admin:
            return self.category_repository.get_category_by_id(category_id)

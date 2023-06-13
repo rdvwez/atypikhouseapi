@@ -34,6 +34,8 @@ def create_app(db_url=None):
     load_dotenv(".env", verbose=True)
     app.config.from_object("default_config")
     # app.config.from_envvar("APPLICATION_SETTINGS")
+
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     
     IMAGE_SET = UploadSet("images", IMAGES) 
     patch_request_class(app, 10 * 1024 * 1024) # 10 Mb max size upload
@@ -53,6 +55,7 @@ def create_app(db_url=None):
     app.config["SQLALCHEMY_DATABASE_URI"] =db_url or  os.getenv("DATABASE_URL","sqlite:///data.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JWT_BLACKLIST_TOKEN_CHECKS"] = ["access", "refresh"] # allow blascklisting for access and refresh tokens
+    app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 
     db.init_app(app)
 

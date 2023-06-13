@@ -36,7 +36,6 @@ class Reservation(MethodView):
     @jwt_required()
     @blp.response(200, ReservationSchema)
     def get(self, reservation_id:int):
-        
         return self.reservation_service.get_reservation_by_id(reservation_id) 
 
     @jwt_required()
@@ -48,11 +47,8 @@ class Reservation(MethodView):
     @blp.arguments(ReservationUpdateSchema)
     @blp.response(200, ReservationSchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
-    # def put(self, *args, **kwargs):
-    def put(self, reservation_data, reservation_id):
-        
-    #    return self.category_service.update_category(kwargs["category_id"], args[0])
-       return self.reservation_service.update_reservation(reservation_id= reservation_id, reservation_data= reservation_data)
+    def put(self, *args, **kwargs):
+        return self.reservation_service.update_reservation(kwargs["reservation_id"], args[0])
         
 
 
@@ -63,12 +59,13 @@ class ReservationList(MethodView):
     def __init__(self):
         self.reservation_service = ReservationService()
 
+    @jwt_required()
     @blp.response(200, ReservationSchema(many=True))
     def get(self):
         return self.reservation_service.get_all_reservations()
 
         
-    # @jwt_required(fresh=True)
+    @jwt_required(fresh=True)
     @blp.arguments(ReservationSchema)
     @blp.response(200, ReservationSchema)
     # category_data contain the json wich is the validated fileds that the schamas requested

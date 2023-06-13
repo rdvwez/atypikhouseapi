@@ -56,7 +56,7 @@ class PropertyUpdateSchema(Schema):
 class PropertySchema(PlainPropertySchema):
     category_id = fields.Int(required = True, load_only = True)
     category = fields.Nested(lambda: CategoryLimitedSchema(), dump_only = True)
-    values = fields.List(fields.Nested(lambda: PlainValueSchema()), dump_only = True)
+    property_values = fields.List(fields.Nested(lambda: PlainValueSchema()), dump_only = True)
 
 class PropertyLimitedSchema(Schema):
     id = fields.Int(dump_only=True)
@@ -74,7 +74,7 @@ class ValueSchema(PlainValueSchema):
     user_id = fields.Int(required = True, load_only = True)
     property_id = fields.Int(required = True, load_only = True)
     user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
-    propty_object = fields.Nested(lambda: PropertyLimitedSchema(), dump_only = True)
+    property_object = fields.Nested(lambda: PropertyLimitedSchema(), dump_only = True)
 
 class ValueLimitedSchema(Schema):
     id = fields.Int(dump_only=True)
@@ -90,7 +90,7 @@ class PlainUserSchema(Schema):
     phone_number = fields.Str(metadata= {'require': True})
     email = fields.Str(metadata= {'require': True})
     password = fields.Str(metadata= {'require': True}, load_only =True)
-    is_custom = fields.Boolean(metadata= {'require': True})
+    is_customer = fields.Boolean(metadata= {'require': True})
     is_owner = fields.Boolean(metadata= {'require': True})
     is_admin = fields.Boolean(metadata= {'require': True})
     is_activated = fields.Boolean(metadata= {'require': True}, dump_only=True)
@@ -100,9 +100,11 @@ class PlainUserSchema(Schema):
     updated_at = fields.DateTime(metadata= {'require': True})
 
 class UserRegisterSchema(Schema):
-    id = fields.Str(dump_only=True)
+    id = fields.Int(dump_only=True)
     email = fields.Str(metadata= {'require': False})
     username = fields.Str(metadata= {'require': False})
+    password = fields.Str(metadata= {'require': True}, load_only =True)
+class UserPasswordSetSchema(Schema):
     password = fields.Str(metadata= {'require': True}, load_only =True)
 
 class UserSchema(PlainUserSchema):
@@ -111,7 +113,9 @@ class UserSchema(PlainUserSchema):
     images = fields.List(fields.Nested(lambda: ImageSchema()), dump_only = True)
 
 class UserLimitedSchema(Schema):
+    id = fields.Str(dump_only=True)
     firstname = fields.Str(metadata= {'require': False})
+    name = fields.Str(metadata= {'require': True})
 
 ######### House schemas ###############################################
 
@@ -123,10 +127,8 @@ class PlainHouseSchema(Schema):
             'required': 'Missing data for required field.', 
             'validator_failed': 'Invalid value.'} )
     show = fields.Bool(metadata= {'require': True})
-
     libelle = fields.Str(metadata= {'require': True})
     description = fields.Str(metadata= {'require': False})
-    # part_number = fields.Integer(metadata= {'require': False})
     bedroom_number = fields.Integer(metadata= {'require': False})
     person_number = fields.Integer(metadata= {'require': False})
     parking_distance = fields.Integer(metadata= {'nullable': False})
@@ -141,10 +143,8 @@ class PlainHouseSchema(Schema):
     country = fields.Str(metadata= {'require': False})
 
 class HouseUpdateSchema(Schema):
-    show = fields.Bool(metadata= {'require': True})
     libelle = fields.Str(metadata= {'require': True})
     description = fields.Str(metadata= {'require': False})
-    # part_number = fields.Integer(metadata= {'require': False})
     bedroom_number = fields.Integer(metadata= {'require': False})
     person_number = fields.Integer(metadata= {'require': False})
     parking_distance = fields.Integer(metadata= {'nullable': False})
@@ -157,8 +157,6 @@ class HouseUpdateSchema(Schema):
     address = fields.Str(metadata= {'require': False})
     city = fields.Str(metadata= {'require': False})
     country = fields.Str(metadata= {'require': False})
-    # created_at = fields.DateTime(required= True)
-    # updated_at = fields.DateTime(required= True)
 
 class HouseSchema(PlainHouseSchema):
     category_id = fields.Int(required = True, load_only = True)
@@ -167,7 +165,7 @@ class HouseSchema(PlainHouseSchema):
     category = fields.Nested(lambda: CategoryLimitedSchema(), dump_only = True)
     user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
     thematic = fields.Nested(lambda: ThematicLimitedSchema(), dump_only = True)
-    images = fields.List(fields.Nested(lambda: ImageSchema()), dump_only = True)
+    images = fields.List(fields.Nested(lambda: ImageWithoutHousesSchema()), dump_only = True)
 
 class HouseLimitedSchema(Schema):
     id = fields.Int(metadata= {'require': True}, dump_only=True)
@@ -179,6 +177,7 @@ class HouseLimitedSchema(Schema):
     person_number = fields.Integer(metadata= {'require': False})
     parking_distance = fields.Integer(metadata= {'nullable': False})
     description = fields.Str(metadata= {'require': False})
+    user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
 
 ######################### images schemas#######################
 
@@ -187,7 +186,7 @@ class FileStorageField(fields.Field):
         "invalid": "Not a valid image"
     }
 
-    def _deserialize(self, value, attr, data) -> Union[FileStorage, None]:
+    def _deserialize(self, value, attr, data, **kwargs) -> Union[FileStorage, None]:
         if value is None:
             return None
 
@@ -195,19 +194,45 @@ class FileStorageField(fields.Field):
             self.fail("invalid") #raises Validationerror
 
         return value
+    
+class UploadImageSchema(Schema):
+    image = FileStorageField(metadata= {'required': True,})
+    # house_id = fields.Int(required = False, load_only = True)
+    # user_id = fields.Int(required = True, load_only = True)
 
 class PlainImageSchema(Schema):
-    image = FileStorageField(metadata= {'require': True})
+    id = fields.Int(dump_only=True)
+    # image = FileStorageField(metadata= {'require': True})
     extension = fields.Str(metadata= {'require': False})
     path = fields.Str(metadata= {'require': False})
     basename = fields.Str(metadata= {'require': False})
     is_avatar = fields.Boolean(metadata= {'require': True})
+    type_mime = fields.Str(metadata= {'require': False}) 
+    size = fields.Int(metadata= {'require': False})
+
+class PlainImageUpdateSchema(Schema):
+    # image = FileStorageField(metadata= {'require': True})
+    # extension = fields.Str(metadata= {'require': False})
+    path = fields.Str(metadata= {'require': False})
+    basename = fields.Str(metadata= {'require': False})
+    is_avatar = fields.Boolean(metadata= {'require': True})
+    type_mime = fields.Str(metadata= {'require': False}) 
+    size = fields.Int(metadata= {'require': False})
+    house_id = fields.Int(required = False, load_only = True)
 
 class ImageSchema(PlainImageSchema):
     house_id = fields.Int(required = False, load_only = True)
-    user_id = fields.Int(required = False, load_only = True)
+    user_id = fields.Int(required = True, load_only = True)
     house = fields.Nested(lambda: HouseLimitedSchema(), dump_only = True)
     user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
+
+class ImageWithoutHousesSchema(PlainImageSchema):
+    user_id = fields.Int(required = False, load_only = True)
+    user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
+
+class ImageWithoutUsersSchema(PlainImageSchema):
+    house_id = fields.Int(required = False, load_only = True)
+    house = fields.Nested(lambda: HouseLimitedSchema(), dump_only = True)
 
 ######################### reservations schemas#######################
 class ReservationStatus(Enum):
@@ -218,7 +243,7 @@ class ReservationStatus(Enum):
     DELETED = 'deleted'
 
 class PlainReservationSchema(Schema):
-    id = fields.Str(dump_only=True)
+    id = fields.Int(dump_only=True)
     status = fields.Enum(ReservationStatus)
     start_date = fields.DateTime(metadata= {'require': True})
     end_date = fields.DateTime(metadata= {'require': True})
@@ -236,7 +261,7 @@ class ReservationSchema(PlainReservationSchema):
     user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
 
 class ReservationLimitedSchema(Schema):
-    id = fields.Str(dump_only=True)
+    id = fields.Int(dump_only=True)
     status = fields.Enum(ReservationStatus)
     amount = fields.Float(metadata= {'nullable': True})
 

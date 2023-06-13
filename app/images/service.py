@@ -1,7 +1,7 @@
 import os
 import traceback
 from flask import abort, send_file
-from typing import List, Dict, Union, Tuple, Literal
+from typing import List, Dict, Union, Tuple, Literal, Mapping
 from requests import Response
 from injector import inject
 from sqlalchemy.exc import SQLAlchemyError
@@ -13,7 +13,10 @@ from app.libs import image_helper
 
 from app.images.repository import ImageRepository
 from app.images.models import ImageModel
+from app.libs.decorators import owner_required
 
+FOLDER = 'madias'
+MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 
 class ImageService:
 
@@ -30,8 +33,8 @@ class ImageService:
         """
         return self.image_repository.get_all()
 
+    @owner_required
     def get_image_by_id(self, image_id: int) -> ImageModel:
-        # return self.category_repository.get_category_by_id(category_id)
         return self.image_repository.get_image_by_id(image_id)
     
     # def get_image_by_name(self, image_name: str):
@@ -49,94 +52,125 @@ class ImageService:
     #     except FileNotFoundError:
     #         return {"massage":f"image '{image_helper}' not found"}, 404
 
-    def give_rigth_folder(self, house_id: Union[int, None], user_id:int = None):
-        if house_id:
-            return f"madias/user_{house_id}" , False
+    def give_rigth_folder(self, user_id:int, house_id:int)->Tuple[str, bool]:
+        if house_id > 0:
+            return f"madias/house_{house_id}", False
         else:
-            if user_id:
-                return f"avatars/user_{user_id}" , True
-            else:
-                return f"avatars/user_{self.user_id}" , True
+            return f"avatars/user_{user_id}", True
+        # else:
+        #     if user_id:
+        #         return f"avatars/user_{user_id}" , True
+        #     else: #update de la photo de profile de l'utilisateur courrent
+        #         current_user_id = get_jwt_identity() 
+        #         return f"avatars/user_{current_user_id}" , True
 
+    @owner_required
+    def create_image(self, image:ImageModel)->ImageModel:
+        self.image_repository.save(image)
+        self.image_repository.commit()
 
-    def create_image(self, image_data:Dict[str, FileStorage], house_id:int):
+        return image
+
+        # """
+        # used to upload an image file
+        # It uses JWT to retrieve information and then saves the image to the user's folder
+        # if there is a filename conflict, it appends a numbers at the end
+        # """
+
+        # user_id = get_jwt_identity()
+        # extension = image_helper.get_extension(image_data["image"])
+        # folder, is_avatar = self.give_rigth_folder(house_id)
+            
+        # try:
+        #     image_path = image_helper.save_image(image = image_data["image"], folder=folder)
+        #     basename = image_helper.get_basename(image_path)
+        #     image = ImageModel(path= image_path, extension = extension, user_id = self.user_id, is_avatar=is_avatar, house_id=house_id, basename= basename)
+            
+            
+        #     self.image_repository.save(image)
+        #     self.image_repository.commit()
+        #     return {"message": f"Image {basename} uploaded"}, 201
+
+        # except UploadNotAllowed:
+            
+        #     return {"image": f"Extension {extension} is not allowed."}, 400
+
+    @owner_required
+    def upload_image(self, image_file: FileStorage ):
 
         """
         used to upload an image file
         It uses JWT to retrieve information and then saves the image to the user's folder
         if there is a filename conflict, it appends a numbers at the end
         """
+        
 
-        # user_id = get_jwt_identity()
-        extension = image_helper.get_extension(image_data["image"])
-        folder, is_avatar = self.give_rigth_folder(house_id)
+        if image_file.content_length > MAX_CONTENT_LENGTH:
+            abort(413, 'The file is too large')
+        
+    
+        extension = image_helper.get_extension(image_file)
             
         try:
-            image_path = image_helper.save_image(image = image_data["image"], folder=folder)
-            basename = image_helper.get_basename(image_path)
-            image = ImageModel(path= image_path, extension = extension, user_id = self.user_id, is_avatar=is_avatar, house_id=house_id, basename= basename)
-            
-            
-            self.image_repository.save(image)
-            self.image_repository.commit()
-            return {"message": f"Image {basename} uploaded"}, 201
+
+                image_path = image_helper.save_image(image = image_file, folder=FOLDER)
+                basename = image_helper.get_basename(image_path)
+                
+                current_user = get_jwt_identity()
+                image = ImageModel(
+                    path = image_path,
+                    extension = extension,
+                    basename = basename,
+                    type_mime = image_file.content_type,
+                    size = image_file.content_length ,
+                    # house_id= image_data["house_id"],
+                    user_id = current_user,
+                    # is_avatar= is_avatar
+                )
+
+                self.image_repository.save(image)
+                self.image_repository.commit()
+
+                return image, 201
 
         except UploadNotAllowed:
-            
             return {"image": f"Extension {extension} is not allowed."}, 400
     
     def create_image_for_fixtures(self, image:ImageModel):
         self.image_repository.save(image)
         self.image_repository.commit()
 
-    def update_image(self, image_data:Dict[str, FileStorage], auther_arguments:Dict[str,None]):
-
-        image = self.image_repository.get_image_by_id(auther_arguments.get("image_id"))
-
-        folder, is_avatar = self.give_rigth_folder(auther_arguments.get("house_id"))
-
-        image_path = image_helper.find_image_any_format(image.basename, folder)
-
-        if image_path:
-            try:
-                os.remove(image_path)
-            except:
-                return {"message":  "Internal error: Image upload failed during the delation of the former image "}, 500
-        
-
+    @owner_required
+    def update_image(self, updated_image_data:dict, image_id:int)-> Tuple[ImageModel, Literal[200]]:
         try:
-            extension = image_helper.get_extension(image_data["image"])
-            image_path = image_helper.save_image(image = image_data["image"], folder=folder)
-            basename = image_helper.get_basename(image_path)
-
-            image.path = image_path
-            image.extension = extension
-            image.basename = basename
+            image = self.image_repository.get_image_by_id(image_id)
+            for key, value in updated_image_data.items():
+                if hasattr(image, key):
+                    setattr(image, key, value)
 
             self.image_repository.save(image)
             self.image_repository.commit()
-            return {"message":  "Image uploaded successfully: {image}"}, 200
-            
-        except UploadNotAllowed:
-            extension = image_helper.get_extension(image_data["image"])
-            return {"message":f"The extension '{extension}' is not allowed: "}, 400
+
+            return image, 200
+        except:
+                abort(404, f"An Image with id:{image_id} doesn't exist")
 
 
+    @owner_required
     def delete_image(self, image_id:int):
-        image = self.get_image_by_id(image_id)
-
+        image = self.image_repository.get_image_by_id(image_id)
+       
         if not image_helper.is_filename_safe(image.basename):
-            return {"massage": f"Illagal filename {image.basename} requested"}, 400
+            return {"massage": f"Illegal filename {image.basename} requested"}, 400
         
         try:
             os.remove(image.path)
-            # folder, is_avatr = self.give_rigth_folder(image.house_id)
             self.image_repository.delete(image)
             self.image_repository.commit()
-            return {"massage": f"Image '{image.basename}' deleted"}, 200
+            return {"massage": f"Image '{image.basename}' has been deleted"}, 204
         except FileExistsError:
             return {"massage":f"image '{image.basename}' not found"}, 404
         except:
             traceback.print_exc()
-            return {"massage":f"Internal error: Internal server errorè! Fail to delete image"}, 500
+            return {"massage":f"Internal server error: Fail to delete image"}, 500
 

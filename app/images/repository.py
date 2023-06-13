@@ -12,8 +12,11 @@ class ImageRepository:
         return ImageModel.query.order_by(ImageModel.id).all()
 
     def get_image_by_id(self, image_id: int) -> ImageModel:
-        image = ImageModel.query.get_or_404(image_id)
-        return image
+        return ImageModel.query.get_or_404(image_id)
+    
+    def get_last_image(self) -> ImageModel:
+        return ImageModel.query.order_by(ImageModel.id.desc()).first()
+        
     
     def save(self, image: ImageModel) -> None:
         db.session.add(image)

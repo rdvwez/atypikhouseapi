@@ -8,15 +8,16 @@ def access_admin_expired_token():
 def  test_get_all_thematics(client, init_database):
     response = client.get("/api/thematic")
     assert response.status_code == 200
-    expected_thematics = [{'houses': [], 'id': 1, 'libelle': 'romantique', 'show': True}, {'houses': [], 'id': 2, 'libelle': 'familial', 'show': False}]
-    assert len(response.json) == 2
+    expected_thematics = [{'houses': [{'area': 8, 'description': 'Good first house', 'id': 1, 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'water': True}], 'id': 1, 'libelle': 'romantique', 'show': True}, {'houses': [{'area': 12, 'description': 'Good second house', 'id': 2, 'libelle': 'second house', 'parking_distance': 5, 'person_number': 3, 'power': True, 'price': 60, 'water': False}], 'id': 2, 'libelle': 'familial', 'show': False}, {'houses': [], 'id': 3, 'libelle': 'To be deleted', 'show': False}]
+
+    assert len(response.json) == 3
     assert response.json == expected_thematics
 
 def test_get_thematic(client, access_admin_token):
     response = client.get("/api/thematic/1", headers={"Authorization": f"Bearer {access_admin_token}"})
     assert response.status_code == 200
     assert response.json["id"] == 1
-    assert response.json == {'houses': [], 'id': 1, 'libelle': 'romantique',  'show': True}
+    assert response.json == {'houses': [{'area': 8, 'description': 'Good first house', 'id': 1, 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'water': True}], 'id': 1, 'libelle': 'romantique', 'show': True}
 
 def test_get_thematic_unauthorized(client, access_owner_token):
     response = client.get("/api/thematic/1", headers={"Authorization": f"Bearer {access_owner_token}"})
@@ -24,7 +25,7 @@ def test_get_thematic_unauthorized(client, access_owner_token):
     assert response.json == {}
 
 def test_delete_thematic(client, access_admin_token):
-    response = client.delete("/api/thematic/2", headers={"Authorization": f"Bearer {access_admin_token}"})
+    response = client.delete("/api/thematic/3", headers={"Authorization": f"Bearer {access_admin_token}"})
     assert response.status_code == 204
 
 def test_delete_thematic_unauthorized(client, access_customer_token):

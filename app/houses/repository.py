@@ -12,8 +12,7 @@ class HouseRepository:
         return HouseModel.query.order_by(HouseModel.id).all()
 
     def get_house_by_id(self, house_id: int) -> HouseModel:
-        house = HouseModel.query.get_or_404(house_id)
-        return house
+        return HouseModel.query.get_or_404(house_id)
     
     def save(self, house: HouseModel) -> None:
         db.session.add(house)

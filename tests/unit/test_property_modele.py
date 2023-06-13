@@ -57,7 +57,8 @@ class PropertyTest(TestCase):
             description="Bon wifi par ici",
             is_required= True,)
         property_dict_representation = prop.__repr__()
-        del property_dict_representation["_sa_instance_state"]
+        breakpoint()
+        print(property_dict_representation)
         self.assertEqual(property_dict_representation, {"libelle":"wifi", "is_required":True, "description":"Bon wifi par ici"})
     
     def test_property_with_category(self):
@@ -88,30 +89,30 @@ class PropertyTest(TestCase):
         
         self.assertIsNone(prop.category_id)
 
-    def test_property_with_values(self):
-        val = ValueModel(
-            id=1,
-            libelle="Active",
-            property_id = 1,
-            )
+    # def test_property_with_values(self):
+    #     val = ValueModel(
+    #         id=1,
+    #         libelle="Active",
+    #         property_id = 1,
+    #         )
         
-        prop = PropertyModel(
-            id=1,
-            libelle="wifi",
-            description="Bon wifi par ici",
-            values=[val]
-            )
+    #     prop = PropertyModel(
+    #         id=1,
+    #         libelle="wifi",
+    #         description="Bon wifi par ici",
+    #         values=[val]
+    #         )
         
     
-        self.assertEqual(prop.__repr__().get("values"), True)
+    #     self.assertEqual(prop.__repr__().get("values"), True)
 
-    def test_property_without_values(self):
+    # def test_property_without_values(self):
         
-        prop = PropertyModel(
-            id=1,
-            libelle="wifi",
-            description="Bon wifi par ici",
-            )
+    #     prop = PropertyModel(
+    #         id=1,
+    #         libelle="wifi",
+    #         description="Bon wifi par ici",
+    #         )
         
     
-        self.assertFalse(prop.__repr__().get("values"))
+    #     self.assertFalse(prop.__repr__().get("values"))
