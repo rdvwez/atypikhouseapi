@@ -247,6 +247,11 @@ class PlainReservationSchema(Schema):
     status = fields.Enum(ReservationStatus)
     start_date = fields.DateTime(metadata= {'require': True})
     end_date = fields.DateTime(metadata= {'require': True})
+    card_number = fields.Str(metadata= {'require': True})
+    card_exp_month = fields.Int(metadata= {'require': True})
+    card_exp_year = fields.Int(metadata= {'require': True})
+    cvc = fields.Str(metadata= {'require': True})
+    amount = fields.Float(metadata= {'require': True})
 
 class ReservationUpdateSchema(Schema):
     status = fields.Enum(ReservationStatus)

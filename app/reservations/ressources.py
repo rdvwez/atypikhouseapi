@@ -67,16 +67,15 @@ class ReservationList(MethodView):
         
     @jwt_required(fresh=True)
     @blp.arguments(ReservationSchema)
-    @blp.response(200, ReservationSchema)
+    @blp.response(201, ReservationSchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
-    def post(self, data:Mapping[str, Mapping]):
+    def post(self, data):
         """
         Expected for token and a reservations data from the request body
         construct a reservation and talk to the strip API to make a charge.
         """
-        reservation = ReservationModel(**data["reservation_data"])
-        # print(category)
+        reservation = ReservationModel(**data)
         # category = CategoryModel(libelle = category_data.get("libelle", "Not Define"), show = category_data.get("libelle", "Not define"))
-        self.reservation_service.create_reservation(reservation, data.get("strip_token"))
-        return reservation
+        return self.reservation_service.create_reservation(reservation)
+        # return reservation
     

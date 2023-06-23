@@ -20,6 +20,7 @@ from app.users.models import UserModel
 from blocklist import BLOCKLIST
 from app.libs.mailgun import Mailgun
 from app.libs.mailgun import MailGunException
+from app.libs.email_sender import send_confirmation_account_mail
 
 
 class UserService:
@@ -28,51 +29,51 @@ class UserService:
         self.user_repository = UserRepository()
         self.mailgun = Mailgun()
 
-    def send_confirmation_mail(self, user_id:int, email:str):
-        # breakpoint()
-        # print(os.environ.get('SMPT_SERVER'))
-        link = request.url_root[0:-1] + url_for("Users.UserConfirm",user_id = user_id)
-        subject = "Registration confirmation"
-        text = f"Please click the link to confirm your registration: {link}"
-        html = f'<html>Please click the link to confirm your registration: <a href="{link}">{link}</a></html>'
+    # def send_confirmation_mail(self, user_id:int, email:str):
+    #     # breakpoint()
+    #     # print(os.environ.get('SMPT_SERVER'))
+    #     link = request.url_root[0:-1] + url_for("Users.UserConfirm",user_id = user_id)
+    #     subject = "Registration confirmation"
+    #     text = f"Please click the link to confirm your registration: {link}"
+    #     html = f'<html>Please click the link to confirm your registration: <a href="{link}">{link}</a></html>'
         
-        message = MIMEMultipart("alternative")
-        message["From"] = os.environ.get('FROM_ADDR')
-        message["To"] = email
-        message["Subject"] = subject
+    #     message = MIMEMultipart("alternative")
+    #     message["From"] = os.environ.get('FROM_ADDR')
+    #     message["To"] = email
+    #     message["Subject"] = subject
 
-        part1 = MIMEText(text, "plain")
-        part2 = MIMEText(html, "html")
+    #     part1 = MIMEText(text, "plain")
+    #     part2 = MIMEText(html, "html")
 
-        message.attach(part1)
-        message.attach(part2)
-        # breakpoint()
-        err=None
-        try:
-            # Connexion au serveur SMTP
-            server = smtplib.SMTP(os.environ.get('SMPT_SERVER'), os.environ.get('SMTP_PORT'))
+    #     message.attach(part1)
+    #     message.attach(part2)
+    #     # breakpoint()
+    #     err=None
+    #     try:
+    #         # Connexion au serveur SMTP
+    #         server = smtplib.SMTP(os.environ.get('SMPT_SERVER'), os.environ.get('SMTP_PORT'))
             
-            server.starttls()
-            server.login(os.environ.get('SMTP_LOGIN'), os.environ.get('SMTP_PASSWORD'))
+    #         server.starttls()
+    #         server.login(os.environ.get('SMTP_LOGIN'), os.environ.get('SMTP_PASSWORD'))
 
-            # Envoi du message
-            server.sendmail(os.environ.get('FROM_ADDR'), email, message.as_string())
-            # print("E-mail envoyé avec succès !")
-            # breakpoint()
+    #         # Envoi du message
+    #         server.sendmail(os.environ.get('FROM_ADDR'), email, message.as_string())
+    #         # print("E-mail envoyé avec succès !")
+    #         # breakpoint()
 
-        except Exception as e:
-            err = e
-            print("Une erreur s'est produite lors de l'envoi de l'e-mail : ", e)
-        except KeyboardInterrupt as er:
-            # err = er
-            err = traceback.print_exc(file=sys.stdout)
-            # breakpoint()
+    #     except Exception as e:
+    #         err = e
+    #         print("Une erreur s'est produite lors de l'envoi de l'e-mail : ", e)
+    #     except KeyboardInterrupt as er:
+    #         # err = er
+    #         err = traceback.print_exc(file=sys.stdout)
+    #         # breakpoint()
 
-        finally:
-            # Fermeture de la connexion SMTP
-            if 'server' in locals():
-                server.quit()
-        return err
+    #     finally:
+    #         # Fermeture de la connexion SMTP
+    #         if 'server' in locals():
+    #             server.quit()
+    #     return err
 
         # return self.mailgun.send_email(email=[email], subject=subject, text=text, html=html)
         # my_variable_value = os.environ.get('SMPT_SERVER')
@@ -99,7 +100,8 @@ class UserService:
         # self.user_repository.commit()
 
         user = self.user_repository.get_user_by_email(email = user.email)
-        res = self.send_confirmation_mail( user_id = user.id, email = user.email)
+        # res = self.send_confirmation_mail( user_id = user.id, email = user.email)
+        res = send_confirmation_account_mail( user_id = user.id, email = user.email, subject="Registration confirmation", url_suffix="Users.UserConfirm")
         if res is None:
             return{"message": "Account created successfully, an email with the activation link has been sent to your emeil addresse, please check."}, 201
         else:

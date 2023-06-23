@@ -304,12 +304,20 @@ def init_database(app):
         amount = 100,
         user_id = 3,
         house_id = 1,
+        card_number  = "4243424342434243",
+        card_exp_month  = 12,
+        card_exp_year  = 26,
+        cvc = 465
     )
     reservation2 = ReservationModel(
         status = "completed",
         amount = 1000,
         user_id = 3,
         house_id = 2,
+        card_number  = "4243424342434224",
+        card_exp_month  = 1,
+        card_exp_year  = 27,
+        cvc = 465
     )
     reservation_repository.save(reservation1)
     reservation_repository.save(reservation2)

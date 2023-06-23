@@ -1,20 +1,33 @@
-import stripe
+
 import os
+import sys
+import smtplib
+import traceback
+from flask import request, url_for
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+import stripe
 from datetime import datetime
 from flask import abort, jsonify
 from typing import List, Dict, Mapping
 from injector import inject
 from sqlalchemy.exc import SQLAlchemyError
 from stripe import error
+
 from flask_jwt_extended import get_jwt_identity
+from app.users.repository import UserRepository
 
 from app.reservations.repository import ReservationRepository
 from app.reservations.models import ReservationModel
 from app.libs.decorators import owner_required, admin_required, customer_required
 from app.users.repository import UserRepository
 from app.houses.repository import HouseRepository
+from app.libs.stripe_helper import create_payment_method, create_stripe_customer, attach_paymentmethod_to_customer, create_subscription
+from app.libs.email_sender import send_reservation_confirmation_mail
 
 CURRENCY = "eur"
+
 
 class ReservationService:
 
@@ -48,49 +61,73 @@ class ReservationService:
 
     @customer_required
     def get_reservation_by_id(self, reservation_id: int) -> ReservationModel:
-        # return self.reservation_repository.get_reservation_by_id(reservation_id)
         return self.reservation_repository.get_reservation_by_id(reservation_id)
+    
 
-    def charge_with_stripe(self, strip_token: str, amount:float,  description:str)-> stripe.Charge:
-        stripe.api_key = os.getenv("STRIPE_API_KEY")
-        return stripe.Charge.create(
-            amount= amount, # amount of cents(100 means USD$1.00)
-            currency= CURRENCY,
-            description= description,
-            source= strip_token
-        )
+   
+    def initialize_stripe_properties(self, card_number:str, card_exp_month:str, card_exp_year:str, cvc:str, user_email:str):
+        payment_methode_id = create_payment_method(card_number = card_number,
+                                                card_exp_month = card_exp_month,
+                                                card_exp_year = card_exp_year, 
+                                                cvc = cvc)
+
+        stripe_customer_id = create_stripe_customer(user_email)
+        return payment_methode_id, stripe_customer_id
 
     @customer_required
-    def create_reservation(self, reservation:ReservationModel, strip_token:str):
+    def create_reservation(self, reservation:ReservationModel):
         """
         Expected for token and a reservatins data from the request body
         construct an reservation and talk to the strip API to make a charge.
         """
+        curent_user = self.user_repository.get_user_by_id(get_jwt_identity())
+
         try:
-            # reservation.amount = (reservation.end_date - reservation.start_date).days
-            self.reservation_repository.save(reservation)
-            self.reservation_repository.commit()
-            description = f"This reservation costs {reservation.amount}, starts {reservation.start_date} an ends {reservation.end_date} "
-            try:
+            
+            if not curent_user.payment_methode and not curent_user.stripe_custome_id:
+                
+                payment_methode_id, stripe_customer_id = self.initialize_stripe_properties(
+                                                                card_number = reservation.card_number,
+                                                                card_exp_month = reservation.card_exp_month,
+                                                                card_exp_year = reservation.card_exp_year, 
+                                                                cvc = reservation.cvc,
+                                                                user_email = curent_user.email
+                                                                )
+                
+                payment_methode_attached = attach_paymentmethod_to_customer(payment_methode_id, stripe_customer_id )
+                
+                curent_user.payment_methode = payment_methode_id
+                curent_user.stripe_custome_id = stripe_customer_id
+   
+            subscription = create_subscription(curent_user.stripe_custome_id, curent_user.payment_methode)
+            
+            if not subscription:
                 reservation.status = "failed"
-                self.charge_with_stripe(strip_token, reservation.amount, description)
-                reservation.status = "complete"
-            except error.CardError as e:
-                return e.json_body, e.http_status
-            except error.RateLimitError as e:
-                return e.json_body, e.http_status
-            except error.InvalidRequestError as e:
-                return e.json_body, e.http_status
-            except error.AuthenticationError as e:
-                return e.json_body, e.http_status 
-            except error.StripeError as e:
-                return e.json_body, e.http_status
-            except Exception as e:
-                print(e)
-                return{"message": "reservation error"}, 500
-            return{"message": "reservation saved successfully."}, 201
-        except SQLAlchemyError:
-            abort(500,"An error occurred while inserting the reservation")
+                return {"message": "reservation failed"}, 500
+            else:
+                reservation.status = "completed"
+                self.reservation_repository.save(reservation)
+                self.reservation_repository.commit()
+                send_email_response = send_reservation_confirmation_mail(email = curent_user.email, subject = "confirmation of your payment", amount = reservation.amount)
+
+        except error.CardError as e:
+            print("La carte est expirée, invalide ou si une autre erreur liée à la carte se produit.")
+            return e.json_body, e.http_status
+        except error.RateLimitError as e:
+            print("Cette exception est levée parce que trop d'appels à l'API Stripe en un court laps de temps.")
+            return e.json_body, e.http_status
+        except error.InvalidRequestError as e:
+            print("Données obligatoires manquantes ou indorectes.")
+            return e.json_body, e.http_status
+        except error.AuthenticationError as e:
+            print("Informations d'authentification fournies sont incorrectes ou insuffisantes pour accéder à l'API Stripe")
+            return e.json_body, e.http_status 
+        except error.StripeError as e:
+            return e.json_body, e.http_status
+        except Exception as e:
+            print(e)
+            return{"message": "reservation error"}, 500
+        return reservation, 201
 
     @owner_required
     def update_reservation(self, reservation_id:int, reservation_data:Dict[str, None]):

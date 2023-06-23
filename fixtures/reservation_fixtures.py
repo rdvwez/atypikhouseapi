@@ -23,6 +23,10 @@ class ReservationFixtures:
                 end_date = end_date,
                 user_id = random.randint(2,3),
                 house_id = random.randint(1,40),
+                card_number  = self.fake.credit_card_number(),
+                card_exp_month  = 7,
+                card_exp_year  = 26,
+                cvc = self.fake.credit_card_security_code()
             )
             self.reservation_repository.save(reservation)
             self.reservation_repository.commit()
