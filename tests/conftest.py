@@ -6,6 +6,8 @@ from PIL import Image
 from flask import Flask
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime, timedelta
+from freezegun import freeze_time
+
 
 from app.db import db
 from main import create_app
@@ -46,19 +48,21 @@ def app():
         db.drop_all()
 
 @pytest.fixture(scope="function")
-def freeze_datetime(monkeypatch):
-    frozen_datetime = datetime(2023, 6, 3, 10, 0, 0)  # Set the desired frozen date and time
+@freeze_time("2023-06-03 10:00:00", tick=0) 
+def freeze_datetime():
+    pass
+    # frozen_datetime = datetime(2023, 6, 3, 10, 0, 0)  # Set the desired frozen date and time
 
-    class FrozenDateTime:
-        @classmethod
-        def now(cls, tz=None):
-            return frozen_datetime.replace(tzinfo=tz)
+    # class FrozenDateTime:
+    #     @classmethod
+    #     def now(cls, tz=None):
+    #         return frozen_datetime.replace(tzinfo=tz)
 
-        @classmethod
-        def utcnow(cls):
-            return frozen_datetime
+    #     @classmethod
+    #     def utcnow(cls):
+    #         return frozen_datetime
 
-    yield monkeypatch.setattr("datetime.datetime", FrozenDateTime)
+    # yield monkeypatch.setattr("datetime.datetime", FrozenDateTime)
 
 
 @pytest.fixture(scope="function")
@@ -66,6 +70,7 @@ def client(app):
     return app.test_client()
 
 @pytest.fixture(scope="module")
+# @freeze_time("2023-06-03 10:00:00", tick=0) 
 def init_database(app):
     # Ajout de catégories à la base de données
     category_repository = CategoryRepository()
@@ -110,7 +115,8 @@ def init_database(app):
         is_owner = True,
         is_admin = True,
         is_activated = True,
-        birth_date = datetime.now(),
+        birth_date = datetime(2023, 6, 3, 10, 0, 0),
+        created_at = datetime(2023, 6, 3, 10, 0, 0),
         gender = True
     )
     user2 = UserModel(
@@ -125,6 +131,7 @@ def init_database(app):
         is_admin = False,
         is_activated = True,
         birth_date = datetime(2023, 6, 3, 10, 0, 0),
+        created_at = datetime(2023, 6, 3, 10, 0, 0),
         gender = False
     )
 
@@ -140,6 +147,7 @@ def init_database(app):
         is_admin = False,
         is_activated = True,
         birth_date = datetime(2023, 6, 3, 10, 0, 0),
+        created_at = datetime(2023, 6, 3, 10, 0, 0),
         gender = True
     )
     user4 = UserModel(
@@ -154,6 +162,7 @@ def init_database(app):
         is_admin = False,
         is_activated = True,
         birth_date = datetime(2023, 6, 3, 10, 0, 0),
+        created_at = datetime(2023, 6, 3, 10, 0, 0),
         gender = True
     )
     user5 = UserModel(
@@ -166,8 +175,9 @@ def init_database(app):
         is_customer = True,
         is_owner = False,
         is_admin = False,
-        is_activated = True,
+        is_activated = False,
         birth_date = datetime(2023, 6, 3, 10, 0, 0),
+        created_at = datetime(2023, 6, 3, 10, 0, 0),
         gender = True
     )
     user_repository.save(user1)
