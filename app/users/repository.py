@@ -10,6 +10,9 @@ class UserRepository:
 
     def get_all(self):
         return UserModel.query.order_by(UserModel.id).all()
+    
+    def delete_all(self) -> None: # type: ignore
+        UserModel.query.delete()
 
     def get_user_by_id(self, user_id: int) -> UserModel:
         return UserModel.query.get_or_404(user_id)

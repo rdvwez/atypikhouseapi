@@ -10,6 +10,9 @@ class HouseRepository:
 
     def get_all(self) -> List[HouseModel]:
         return HouseModel.query.order_by(HouseModel.id).all()
+    
+    def delete_all(self) -> None:
+        HouseModel.query.delete()
 
     def get_house_by_id(self, house_id: int) -> HouseModel:
         return HouseModel.query.get_or_404(house_id)

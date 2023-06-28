@@ -15,6 +15,9 @@ class ReservationRepository:
         reservation = ReservationModel.query.get_or_404(reservation_id)
         return reservation
     
+    def delete_all(self) -> None:
+        ReservationModel.query.delete()
+
     def save(self, reservation: ReservationModel) -> None:
         db.session.add(reservation)
 

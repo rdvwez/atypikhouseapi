@@ -13,6 +13,9 @@ class CategoryRepository:
         # return CategoryModel.query.order_by(CategoryModel.id).all()
         category = CategoryModel.query.order_by(CategoryModel.id).all()
         return category
+    
+    def delete_all(self) -> None:
+        CategoryModel.query.delete()
 
     def get_category_by_id(self, category_id: int) -> CategoryModel:
         category = CategoryModel.query.get_or_404(category_id)

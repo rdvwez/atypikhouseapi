@@ -10,6 +10,9 @@ class ValueRepository:
 
     def get_all(self)-> List[ValueModel]:
         return ValueModel.query.order_by(ValueModel.id).all()
+    
+    def delete_all(self) -> None: # type: ignore
+        ValueModel.query.delete()
 
     def get_value_by_id(self, Value_id: int) -> ValueModel:
         value = ValueModel.query.get_or_404(Value_id)

@@ -10,6 +10,9 @@ class ImageRepository:
 
     def get_all(self) -> List[ImageModel]:
         return ImageModel.query.order_by(ImageModel.id).all()
+    
+    def delete_all(self) -> None:
+        ImageModel.query.delete()
 
     def get_image_by_id(self, image_id: int) -> ImageModel:
         return ImageModel.query.get_or_404(image_id)
