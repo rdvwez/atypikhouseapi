@@ -42,6 +42,8 @@ def app():
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
     with app.app_context():
+        db.drop_all()
+
         db.create_all()
         yield app
         db.session.remove()
@@ -72,6 +74,8 @@ def client(app):
 @pytest.fixture(scope="module")
 # @freeze_time("2023-06-03 10:00:00", tick=0) 
 def init_database(app):
+    db.drop_all()
+    db.create_all()
     # Ajout de catégories à la base de données
     category_repository = CategoryRepository()
     cat1= CategoryModel(libelle = "bulle", show = True)
@@ -83,14 +87,14 @@ def init_database(app):
     category_repository.commit()
 
     # Add thematics to database
-    thematic_repositery = ThematicRepository()
+    thematic_repository = ThematicRepository()
     thematic1 = ThematicModel(libelle = "romantique", show = True)
     thematic2 = ThematicModel(libelle = "familial", show = False)
     thematic3 = ThematicModel(libelle = "To be deleted", show = False)
-    thematic_repositery.save(thematic1)
-    thematic_repositery.save(thematic2)
-    thematic_repositery.save(thematic3)
-    thematic_repositery.commit()
+    thematic_repository.save(thematic1)
+    thematic_repository.save(thematic2)
+    thematic_repository.save(thematic3)
+    thematic_repository.commit()
 
     # Add properties to database
     property_repository = PropertyRepository()
@@ -310,7 +314,7 @@ def init_database(app):
     # Add reservation to database
     reservation_repository = ReservationRepository()
     reservation1 = ReservationModel(
-        status = "canceled",
+        status = "CANCELED",
         amount = 100,
         user_id = 3,
         house_id = 1,
@@ -320,7 +324,7 @@ def init_database(app):
         cvc = 465
     )
     reservation2 = ReservationModel(
-        status = "completed",
+        status = "COMPLETED",
         amount = 1000,
         user_id = 3,
         house_id = 2,
@@ -332,6 +336,34 @@ def init_database(app):
     reservation_repository.save(reservation1)
     reservation_repository.save(reservation2)
     reservation_repository.commit()
+
+    # yield 
+    yield  # Permet d'exécuter les tests
+
+    # Nettoyage après les tests
+    db.session.rollback()
+    db.drop_all()
+
+    # reservation_repository.delete_all()
+    # image_repository.delete_all()
+    # value_repository.delete_all()
+    # house_repository.delete_all()
+    # thematic_repository.delete_all()
+    # property_repository.delete_all()
+    # category_repository.delete_all()
+    # user_repository.delete_all()
+
+    # reservation_repository.commit()
+    # image_repository.commit()
+    # value_repository.commit()
+    # house_repository.commit()
+    # thematic_repository.commit()
+    # property_repository.commit()
+    # category_repository.commit()
+    # user_repository.commit()
+
+    # db.session.remove()
+    # db.drop_all()
 
 
     
@@ -368,13 +400,13 @@ def access_customer_token(client):
 
     
 # @pytest.fixture(scope="session", autouse=True)
-# def cleanup_database():
+# def cleanup_database(app):
 #     yield
 #     with app.app_context():
 #         db.session.remove()
 #         db.drop_all()
 
-    # yield db
+    # yield 
 
     # Suppression des données de test de la base de données
     # user_repository.delete(user1)
