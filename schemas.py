@@ -236,11 +236,11 @@ class ImageWithoutUsersSchema(PlainImageSchema):
 
 ######################### reservations schemas#######################
 class ReservationStatus(Enum):
-    PENDING = 'pending'
-    CANCELED = 'canceled'
-    COMPLETED = 'completed'
-    FAILED = 'failed'
-    DELETED = 'deleted'
+    PENDING = 'PENDING'
+    CANCELED = 'CANCELED'
+    COMPLETED = 'COMPLETED'
+    FAILED = 'FAILED'
+    DELETED = 'DELETED'
 
 class PlainReservationSchema(Schema):
     id = fields.Int(dump_only=True)
