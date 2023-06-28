@@ -121,8 +121,9 @@ class UserService:
 
         
     
-    def login(self, credentials):
+    def login(self, credentials:Dict[str,str]):
         user = self.user_repository.get_user_by_email_or_username(credentials)
+        # breakpoint()
         if user and pbkdf2_sha256.verify(credentials["password"], user.password):
             if user.is_activated:
 
@@ -162,7 +163,7 @@ class UserService:
         # on ne peut que rafrechir le token une seule foi, voir ci dessous
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)
-        return {"access_token": new_token}
+        return {"access_token": new_token}, 200
     
     @customer_required
     def logout(self):

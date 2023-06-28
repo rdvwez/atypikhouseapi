@@ -102,10 +102,10 @@ class ReservationService:
             subscription = create_subscription(curent_user.stripe_custome_id, curent_user.payment_methode)
             
             if not subscription:
-                reservation.status = "failed"
+                reservation.status = "FAILED"
                 return {"message": "reservation failed"}, 500
             else:
-                reservation.status = "completed"
+                reservation.status = "COMPLETED"
                 self.reservation_repository.save(reservation)
                 self.reservation_repository.commit()
                 send_email_response = send_reservation_confirmation_mail(email = curent_user.email, subject = "confirmation of your payment", amount = reservation.amount)
@@ -134,8 +134,7 @@ class ReservationService:
         
         try:
             reservation = self.reservation_repository.get_reservation_by_id(reservation_id)
-
-
+            
             reservation.end_date = reservation_data.get("end_date")
             reservation.start_date = reservation_data.get("start_date")
             reservation.status = reservation_data.get("status").value

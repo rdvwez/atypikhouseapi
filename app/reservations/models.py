@@ -15,11 +15,11 @@ from app.db import db
 
 # )
 class ReservationStatus(enum.Enum):
-    PENDING = 'pending'
-    CANCELED = 'canceled'
-    COMPLETED = 'completed'
-    FAILED = 'failed'
-    DELETED = 'deleted'
+    PENDING = 'PENDING'
+    CANCELED = 'CANCELED'
+    COMPLETED = 'COMPLETED'
+    FAILED = 'FAILED'
+    DELETED = 'DELETED'
 
 class ReservationModel(db.Model):
 

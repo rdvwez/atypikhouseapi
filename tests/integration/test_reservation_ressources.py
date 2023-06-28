@@ -3,6 +3,10 @@ import pytest
 
 from unittest import mock
 
+from .test_order import pytestmark
+
+pytestmark = pytest.mark.run(order=8)
+
 
 # def mock_create_payment_method():
 #     return "pm_1NIqMm2eZvKYlo2CNKzeNgrM"
@@ -53,13 +57,6 @@ def test_get_reservation(client,init_database, access_customer_token):
     assert response.json["id"] == 1
     assert response.json == {'amount': 100.0, 'card_exp_month': 12, 'card_exp_year': 26, 'card_number': '4243424342434243', 'cvc': '465', 'end_date': None, 'house': {'area': 8, 'description': 'Good first house', 'id': 1, 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}, 'water': True}, 'id': 1, 'start_date': None, 'status': 'CANCELED', 'user': {'firstname': 'Joseph', 'id': '3', 'name': 'Henry'}}
 
-def test_delete_reservation(client,init_database, access_owner_token):
-    response = client.delete("/api/reservation/1", headers={"Authorization": f"Bearer {access_owner_token}"})
-    assert response.status_code == 204
-
-def test_delete_reservation_unauthorized(client,init_database, access_customer_token):
-    response = client.delete("/api/reservation/1", headers={"Authorization": f"Bearer {access_customer_token}"})
-    assert response.status_code == 403
 
 def test_update_reservation(client, init_database, access_admin_token):
     reservation_data = {
@@ -68,8 +65,11 @@ def test_update_reservation(client, init_database, access_admin_token):
         "end_date":"2023-04-01T00:00:00",
         }
     response = client.put("/api/reservation/2", json=reservation_data, headers={"Authorization": f"Bearer {access_admin_token}"})
+
     assert response.status_code == 200
     assert response.json["status"] == "PENDING"
+    assert response.json == {'amount': 1000.0, 'card_exp_month': 1, 'card_exp_year': 27, 'card_number': '4243424342434224', 'cvc': '465', 'end_date': '2023-04-01T00:00:00', 'house': {'area': 12, 'description': 'Good second house', 'id': 2, 'libelle': 'second house', 'parking_distance': 5, 'person_number': 3, 'power': True, 'price': 60, 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}, 'water': False}, 'id': 2, 'start_date': '2023-03-10T00:00:00', 'status': 'PENDING', 'user': {'firstname': 'Joseph', 'id': '3', 'name': 'Henry'}}
+
 
 
 def test_update_reservation_unauthorized(client, init_database, access_customer_token):
@@ -159,6 +159,14 @@ def test_create_reservation_without_fresh_token(client, init_database, access_cu
         response = client.post("/api/reservation", json=new_reservation, headers={"Authorization": f"Bearer {access_customer_expired_token}"})
 
         assert response.status_code == 401
+
+def test_delete_reservation(client,init_database, access_owner_token):
+    response = client.delete("/api/reservation/1", headers={"Authorization": f"Bearer {access_owner_token}"})
+    assert response.status_code == 204
+
+def test_delete_reservation_unauthorized(client,init_database, access_customer_token):
+    response = client.delete("/api/reservation/1", headers={"Authorization": f"Bearer {access_customer_token}"})
+    assert response.status_code == 403
 
 
 

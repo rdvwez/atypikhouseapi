@@ -48,10 +48,9 @@ class TokeRefresh(MethodView):
     def __init__(self):
         self.user_service = UserService()
 
-    @jwt_required(refresh=True)
+    @jwt_required()
     def get(self):
-        breakpoint()
-        self.user_service.refresh_token()
+        return self.user_service.refresh_token()
 
 @blp.route("/user/<int:user_id>")
 class User(MethodView):

@@ -10,6 +10,7 @@ from app.categories.repository import CategoryRepository
 from app.houses.models import HouseModel
 from app.categories.models import CategoryModel
 from app.users.repository import UserRepository
+from app.libs.decorators import admin_required
 
 
 class CategoryService:
@@ -28,52 +29,43 @@ class CategoryService:
         
         return self.category_repository.get_all()
 
+    @admin_required
     def get_category_by_id(self, category_id: int) -> CategoryModel :
-        curent_user = self.user_repository.get_user_by_id(get_jwt_identity())
-        if curent_user.is_admin:
-           return self.category_repository.get_category_by_id(category_id)
-        return{"message": "Access Denied"}, 403
-
-
-    def create_category(self, category):
-        curent_user = self.user_repository.get_user_by_id(get_jwt_identity())
-        if curent_user.is_admin:
-            try:
-                self.category_repository.save(category)
-                self.category_repository.commit()
-                return category, 201
-            except SQLAlchemyError:
-                abort(500,"An error occurred while inserting the category")
-        return{"message": "Access Denied"}, 403
-
-    def update_category(self, category_id:int, category_data:Dict[str, None]):
-        curent_user = self.user_repository.get_user_by_id(get_jwt_identity())
+        return self.category_repository.get_category_by_id(category_id)
         
-        if curent_user.is_admin:
-            try:
-                category = self.category_repository.get_category_by_id(category_id)
-                category.show = category_data.get("show", 0)
-                category.libelle = category_data.get("libelle","Not define")
-                self.category_repository.save(category)
-                self.category_repository.commit()
-                return category
-            except:
-                abort(404, f"A category with id:{category_id} doesn't exist")
-        return{"message": "Access Denied"}, 403
 
+    @admin_required
+    def create_category(self, category):
+        try:
+            self.category_repository.save(category)
+            self.category_repository.commit()
+            return category, 201
+        except SQLAlchemyError:
+            abort(500,"An error occurred while inserting the category")
 
+    @admin_required
+    def update_category(self, category_id:int, category_data:Dict[str, None]):
+        try:
+            category = self.category_repository.get_category_by_id(category_id)
+            category.show = category_data.get("show", 0)
+            category.libelle = category_data.get("libelle","Not define")
+            self.category_repository.save(category)
+            self.category_repository.commit()
+            return category
+        except:
+            abort(404, f"A category with id:{category_id} doesn't exist")
+
+    @admin_required
     def delete_category(self, category_id):
-        curent_user = self.user_repository.get_user_by_id(get_jwt_identity())
-        if curent_user.is_admin:
-            try:
-                category = self.category_repository.get_category_by_id(category_id)
-                self.category_repository.delete(category)
-                self.category_repository.commit()
-                return  {"message":"category deleted"}, 204
-            except:
-                abort(404, f"A category with id:{category_id} doesn't exist")
-        return{"message": "Access Denied"}, 403
+        try:
+            category = self.category_repository.get_category_by_id(category_id)
+            self.category_repository.delete(category)
+            self.category_repository.commit()
+            return  {"message":"category deleted"}, 204
+        except:
+            abort(404, f"A category with id:{category_id} doesn't exist")
 
+    @admin_required
     def get_houses_in_category(self, category_id:int) -> List[HouseModel]:
         """Get Houses which belong to category
 

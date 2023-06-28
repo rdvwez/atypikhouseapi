@@ -2,6 +2,9 @@ import pytest
 import io
 import os
 import shutil
+from .test_order import pytestmark
+
+pytestmark = pytest.mark.run(order=7)
 
 
 from app.images.repository import ImageRepository, ImageModel
@@ -15,7 +18,7 @@ def  test_get_all_images(client, init_database):
     response = client.get("/api/image")
     assert response.status_code == 200
     
-    expected_images = [{'basename': 'front.jpg', 'extension': '.jpg', 'house': {'area': 8, 'description': 'Good first house', 'id': 1, 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'water': True}, 'id': 1, 'is_avatar': False, 'path': '/media/house/', 'size': 34, 'type_mime': 'image/jpeg', 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}}, {'basename': 'back.jp', 'extension': '.jpg', 'house': {'area': 12, 'description': 'Good second house', 'id': 2, 'libelle': 'second house', 'parking_distance': 5, 'person_number': 3, 'power': True, 'price': 60, 'water': False}, 'id': 2, 'is_avatar': False, 'path': '/media/house/', 'size': 43, 'type_mime': 'image/jpeg', 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}}, {'basename': 'deletion_test_image.jpg', 'extension': '.jpg', 'house': {'area': 8, 'description': 'Good first house', 'id': 1, 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'water': True}, 'id': 3, 'is_avatar': False, 'path': 'fixtures/medias/deletion_test_image.jpg', 'size': 54881, 'type_mime': 'image/jpeg', 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}}]
+    expected_images = [{'basename': 'front.jpg', 'extension': '.jpg', 'house': {'area': 8, 'description': 'Good first house', 'id': 1, 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}, 'water': True}, 'id': 1, 'is_avatar': False, 'path': '/media/house/', 'size': 34, 'type_mime': 'image/jpeg', 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}}, {'basename': 'back.jp', 'extension': '.jpg', 'house': {'area': 12, 'description': 'Good second house', 'id': 2, 'libelle': 'second house', 'parking_distance': 5, 'person_number': 3, 'power': True, 'price': 60, 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}, 'water': False}, 'id': 2, 'is_avatar': False, 'path': '/media/house/', 'size': 43, 'type_mime': 'image/jpeg', 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}}, {'basename': 'deletion_test_image.jpg', 'extension': '.jpg', 'house': {'area': 8, 'description': 'Good first house', 'id': 1, 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}, 'water': True}, 'id': 3, 'is_avatar': False, 'path': 'fixtures/medias/deletion_test_image.jpg', 'size': 54881, 'type_mime': 'image/jpeg', 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}}]
 
     assert len(response.json) == 3
     assert response.json == expected_images
@@ -24,7 +27,7 @@ def test_get_image(client,init_database, access_owner_token):
     response = client.get("/api/image/1", headers={"Authorization": f"Bearer {access_owner_token}"})
     assert response.status_code == 200
     assert response.json["id"] == 1
-    assert response.json == {'basename': 'front.jpg', 'extension': '.jpg', 'house': {'area': 8, 'description': 'Good first house', 'id': 1, 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'water': True}, 'id': 1, 'is_avatar': False, 'path': '/media/house/', 'size': 34, 'type_mime': 'image/jpeg', 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}}
+    assert response.json == {'basename': 'front.jpg', 'extension': '.jpg', 'house': {'area': 8, 'description': 'Good first house', 'id': 1, 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}, 'water': True}, 'id': 1, 'is_avatar': False, 'path': '/media/house/', 'size': 34, 'type_mime': 'image/jpeg', 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}}
 
 
 def test_get_image_unauthorized(client,init_database, access_customer_token):
