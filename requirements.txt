@@ -33,3 +33,4 @@ Pillow
 flask_oauthlib
 freezegun
 time-machine
+pytest-ordering
