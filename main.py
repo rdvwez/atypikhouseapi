@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 from app.db import db
 from blocklist import BLOCKLIST
-from oa import oauth
+from app.libs.oa import oauth
 # from fixtures import fixtures_loader
 from fixtures.fixtures_loader import load_all_fixtures
 from flask_uploads import configure_uploads, patch_request_class,  UploadSet, IMAGES

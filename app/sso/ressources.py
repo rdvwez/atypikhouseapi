@@ -2,7 +2,7 @@ from flask import g, request, url_for
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 from flask_jwt_extended import create_access_token, create_refresh_token
-from oa import google, facebook, github
+from app.libs.oa import google, facebook, github
 
 from app.users.repository import UserRepository
 from app.users.models import UserModel
