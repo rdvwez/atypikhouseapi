@@ -5,9 +5,10 @@ from typing import List, Dict, Union, Tuple, Literal, Mapping
 from requests import Response
 from injector import inject
 from sqlalchemy.exc import SQLAlchemyError
-from flask_uploads import UploadNotAllowed
+# from flask_uploads import UploadNotAllowed
 from flask_jwt_extended import get_jwt_identity
 from werkzeug.datastructures import FileStorage
+
 
 from app.libs import image_helper
 
@@ -133,7 +134,7 @@ class ImageService:
 
                 return image, 201
 
-        except UploadNotAllowed:
+        except Exception as e:
             return {"image": f"Extension {extension} is not allowed."}, 400
     
     def create_image_for_fixtures(self, image:ImageModel):
