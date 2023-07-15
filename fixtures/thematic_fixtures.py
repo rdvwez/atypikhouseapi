@@ -1,7 +1,8 @@
 from faker import Faker
 
-from app.thematics.service import ThematicService
+# from app.thematics.service import ThematicService
 from app.thematics.models import ThematicModel
+from app.thematics.repository import ThematicRepository
 
 # fake = Faker(locale='fr_FR')
 
@@ -13,11 +14,14 @@ class  ThematicFixtures:
             "Pêche", "observatoire des étoiles", "montagne", "à la ferme"]
 
         self.fake = Faker(locale='fr_FR')
-        self.thematic_service = ThematicService()
+        # self.thematic_service = ThematicService()
+        self.thematic_repository = ThematicRepository()
 
 
     def load(self) -> None:
         
         for wording in self.thematics_wordings:
             thematic = ThematicModel(libelle = wording, show = self.fake.boolean(chance_of_getting_true=50))
-            self.thematic_service.create_thematic(thematic)
+            # self.thematic_service.create_thematic(thematic)
+            self.thematic_repository.save(thematic)
+            self.thematic_repository.commit()

@@ -1,8 +1,9 @@
 import random
 from faker import Faker
 
-from app.houses.service import HouseService
+# from app.houses.service import HouseService
 from app.houses.models import HouseModel
+from app.houses.repository import HouseRepository
 
 
 class  HouseFixtures:
@@ -10,7 +11,8 @@ class  HouseFixtures:
     def __init__(self) -> None:
 
         self.fake = Faker(locale='fr_FR')
-        self.house_service = HouseService()
+        # self.house_service = HouseService()
+        self.house_repository = HouseRepository()
         # self.bedroom_and_person_number = random.randint(1,4)
 
 
@@ -36,6 +38,7 @@ class  HouseFixtures:
                                 address = self.fake.street_address(),
                                 city = self.fake.city(),
                                 country = self.fake.country())
-            self.house_service.create_house(house)
+            self.house_repository.save(house)
+            self.house_repository.commit()
             x+=1
             

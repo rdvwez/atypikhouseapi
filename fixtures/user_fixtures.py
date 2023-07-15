@@ -19,18 +19,27 @@ class UserFixtures:
         counter = 1
         for role in self.roles:
 
-            gender = self.fake.boolean(chance_of_getting_true=50)
+            if role == "admin":
 
-            if gender:
-                lambda_name = self.fake.last_name_male(), 
-                lambda_first_name = self.fake.first_name_male()
-                
+                gender = 1
+            
+                lambda_name = "Doe"
+                lambda_first_name = "Jhon"
+
+                lambda_email = f"{lambda_first_name}.{lambda_name[0]}@hatypikhouse.fr"
             else:
-                lambda_name = self.fake.last_name_female(), 
-                lambda_first_name = self.fake.first_name_female()
-                
+                gender = self.fake.boolean(chance_of_getting_true=50)
 
-            lambda_email = f"{lambda_first_name}.{lambda_name[0]}@hatypikhouse.fr"
+                if gender:
+                    lambda_name = self.fake.last_name_male(), 
+                    lambda_first_name = self.fake.first_name_male()
+                    
+                else:
+                    lambda_name = self.fake.last_name_female(), 
+                    lambda_first_name = self.fake.first_name_female()
+                    
+
+                lambda_email = f"{lambda_first_name}.{lambda_name[0]}@hatypikhouse.fr"   
 
             user = UserModel(
                 name = lambda_name,
@@ -56,4 +65,6 @@ class UserFixtures:
                                 extension=os.path.splitext(basename)[1], 
                                 user_id=counter)
             self.image_service.create_image_for_fixtures(avavtar)
+
+                
             counter +=1
