@@ -1,14 +1,15 @@
+from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint
-from flask_jwt_extended import jwt_required   
+from flask_jwt_extended import jwt_required
 
 from app.users.service import UserService
 from app.users.models import UserModel
-from schemas import UserSchema, UserRegisterSchema
+from schemas import UserSchema, UserRegisterSchema, UserPasswordSetSchema
 
 
 
-blp = Blueprint("Users","users",description="Operations on users")
+blp = Blueprint("Users","users",description="Operations on users",url_prefix="/api")
 
 @blp.route("/register")
 class UserRegister(MethodView):
@@ -19,10 +20,10 @@ class UserRegister(MethodView):
 
     @blp.arguments(UserRegisterSchema)
     def post(self, user_data):
-        self.user_service.register(user_data)
+        return self.user_service.register(user_data)
 
 @blp.route("/login")
-class UserLogn(MethodView):
+class UserLogin(MethodView):
 
     # @inject
     def __init__(self):
@@ -38,7 +39,7 @@ class UserLogout(MethodView):
         self.user_service = UserService()
 
     @jwt_required()
-    def post(self):
+    def get(self):
         return self.user_service.logout()
 
 
@@ -47,9 +48,9 @@ class TokeRefresh(MethodView):
     def __init__(self):
         self.user_service = UserService()
 
-    @jwt_required(refresh=True)
-    def post(self):
-        self.user_service.refresh_token()
+    @jwt_required()
+    def get(self):
+        return self.user_service.refresh_token()
 
 @blp.route("/user/<int:user_id>")
 class User(MethodView):
@@ -60,8 +61,8 @@ class User(MethodView):
     @jwt_required() #peret de securiser la route, il faut avoir le token pour y acceder
     @blp.response(200, UserSchema)
     def get(self, user_id):
-        user = self.user_service.get_user_by_id(user_id)
-        return user
+        return self.user_service.get_user_by_id(user_id)
+
     
     @jwt_required()
     def delete(self, user_id):
@@ -74,16 +75,15 @@ class UserList(MethodView):
     
     def __init__(self):
         self.user_service = UserService()
-
-    #TODO: Ne peut qu'aaccer à cette routr l'admin connecté
+        
     @jwt_required() 
     @blp.response(200, UserSchema(many=True))
     def get(self):
         # return "ERT"
         return self.user_service.get_all_user()
 
-    #TODO: Ne peut qu'aaccer à cette routr l'admin connecté
-    @jwt_required()
+    #TODO: Ne peut acceder à cette route l'admin connecté
+    @jwt_required(fresh=True)
     @blp.arguments(UserSchema)
     @blp.response(200, UserSchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
@@ -98,8 +98,19 @@ class UserConfirm(MethodView):
     def __init__(self):
         self.user_service = UserService()
 
-    @jwt_required() 
+    # @jwt_required() 
     # @blp.response(200, UserSchema)
     def get(self, user_id):
         return self.user_service.confirm_user(user_id)
-        
+
+@blp.route("/user/password")
+class SetPassword(MethodView):
+
+    def __init__(self):
+        self.user_service = UserService()
+    
+    @jwt_required(fresh=True)
+    @blp.arguments(UserPasswordSetSchema)
+    @blp.response(201, UserSchema)
+    def post(self,user_data):
+        return self.user_service.set_password(user_data)

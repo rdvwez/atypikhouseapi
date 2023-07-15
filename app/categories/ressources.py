@@ -10,7 +10,7 @@ from app.categories.service import CategoryService
 from schemas import CategorySchema, CategoryUpdateSchema, HouseSchema
 
 
-blp = Blueprint("Categories","categories",description="Operations on categories")
+blp = Blueprint("Categories","categories",description="Operations on categories", url_prefix="/api")
 
 
 @blp.route("/category/<string:category_id>/house")
@@ -43,7 +43,7 @@ class Category(MethodView):
     def delete(self, category_id):
         return self.category_service.delete_category(category_id)
 
-    #TODO: il faut être connecté et admin pour acceder à cette route
+    
     @jwt_required(fresh=True)
     @blp.arguments(CategoryUpdateSchema)
     @blp.response(200, CategorySchema)
@@ -65,16 +65,14 @@ class CategoryList(MethodView):
 
     @blp.response(200, CategorySchema(many=True))
     def get(self):
-        return self.category_service.get_all_categories()
+        return self.category_service.get_all_categories()    
 
-    # @jwt_required(fresh=True)
+    @jwt_required(fresh=True)
     @blp.arguments(CategorySchema)
-    @blp.response(200, CategorySchema)
+    @blp.response(201, CategorySchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
     def post(self, category_data:Dict[str, None]):
         category = CategoryModel(**category_data)
-        # print(category)
-        # category = CategoryModel(libelle = category_data.get("libelle", "Not Define"), show = category_data.get("libelle", "Not define"))
-        self.category_service.create_category(category)
-        return category
+        return self.category_service.create_category(category)
+        
     

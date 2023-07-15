@@ -10,6 +10,9 @@ class PropertyRepository:
 
     def get_all(self):
         return PropertyModel.query.order_by(PropertyModel.id).all()
+    
+    def delete_all(self) -> None:
+        PropertyModel.query.delete()
 
     def get_property_by_id(self, property_id: int) -> PropertyModel:
         property_object = PropertyModel.query.get_or_404(property_id)

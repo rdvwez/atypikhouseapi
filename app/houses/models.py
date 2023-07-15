@@ -14,7 +14,6 @@ class HouseModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     libelle = db.Column(db.String(40), unique=True, nullable=False)
     description = db.Column(db.Text, nullable=True)
-    # part_number = db.Column(db.Integer  , nullable=False)
     bedroom_number = db.Column(db.Integer, nullable=False)
     person_number = db.Column(db.Integer, nullable=False)
     parking_distance = db.Column(db.Integer, nullable=False)
@@ -38,8 +37,8 @@ class HouseModel(db.Model):
     images = db.relationship("ImageModel", back_populates="house", lazy = "dynamic")
     
 
-    def __repr__(self) -> dict:
-        return self.__dict__
+    def __repr__(self) -> str:
+        return str(self.__dict__)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
