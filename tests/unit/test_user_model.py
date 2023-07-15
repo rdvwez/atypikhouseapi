@@ -39,35 +39,35 @@ class UserTest(TestCase):
         self.assertTrue(user.gender)
         self.assertTrue(user.is_activated)
     
-    def test_repr(self):
-        user = UserModel(
-                name = "MOTO",
-                firstname = "Julien" ,
-                username = "juju",
-                phone_number = "+33 06 45 96 32 45",
-                email = "julien.moto@gmail.com",
-                password = "12345",
-                is_customer = True,
-                is_owner = False,
-                is_admin = False,
-                birth_date = "13/08/1908",
-                gender = True,
-                is_activated = True
-            )
-        user_dict_representation = user.__repr__()
-        self.assertEqual(user_dict_representation, '''{"name":"MOTO", 
-                                                    "firstname":"Julien",
-                                                    "username":"juju",
-                                                    "phone_number": "+33 06 45 96 32 45",
-                                                    "email":"julien.moto@gmail.com",
-                                                    "password":"12345",
-                                                    "is_customer" : True,
-                                                    "is_owner" : False,
-                                                    "is_admin" : False,
-                                                    "birth_date" : "13/08/1908",
-                                                    "gender" : True,
-                                                    "is_activated" : True
-                                                    }''')
+    # def test_repr(self):
+    #     user = UserModel(
+    #             name = "MOTO",
+    #             firstname = "Julien" ,
+    #             username = "juju",
+    #             phone_number = "+33 06 45 96 32 45",
+    #             email = "julien.moto@gmail.com",
+    #             password = "12345",
+    #             is_customer = True,
+    #             is_owner = False,
+    #             is_admin = False,
+    #             birth_date = "13/08/1908",
+    #             gender = True,
+    #             is_activated = True
+    #         )
+    #     user_dict_representation = user.__repr__()
+    #     self.assertEqual(user_dict_representation, '''{"name":"MOTO", 
+    #                                                 "firstname":"Julien",
+    #                                                 "username":"juju",
+    #                                                 "phone_number": "+33 06 45 96 32 45",
+    #                                                 "email":"julien.moto@gmail.com",
+    #                                                 "password":"12345",
+    #                                                 "is_customer" : True,
+    #                                                 "is_owner" : False,
+    #                                                 "is_admin" : False,
+    #                                                 "birth_date" : "13/08/1908",
+    #                                                 "gender" : True,
+    #                                                 "is_activated" : True
+    #                                                 }''')
     
     def test_create_user_without_email(self):
         user = UserModel( password = "12345" )

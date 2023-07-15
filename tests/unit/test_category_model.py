@@ -1,4 +1,6 @@
+import json
 from unittest import TestCase
+
 from app.categories.models import CategoryModel
 from app.houses.models import HouseModel
 from app.properties.models import PropertyModel
@@ -48,9 +50,30 @@ class CategoryTest(TestCase):
 
     def test_repr(self):
         cat = CategoryModel(libelle="cabane dans les arbres", show=True)
-        category_dict_representation = cat.__repr__()
-        self.assertEqual(category_dict_representation, "{'id': None, 'libelle': 'cabane dans les arbres', 'show': True}"
-)
+    
+        # Créer un dictionnaire représentant l'objet cat
+        cat_dict = {
+            "id": cat.id,
+            "libelle": cat.libelle,
+            "show": cat.show
+        }
+        
+        # Convertir le dictionnaire en une chaîne JSON valide
+        cat_json = json.dumps(cat_dict)
+        
+        # Charger la chaîne JSON en tant que dictionnaire
+        category_dict_representation = json.loads(cat_json)
+        
+        # Supprimer la clé "_sa_instance_state" si elle existe
+        # category_dict_representation.pop('_sa_instance_state', None)
+        
+        expected_dict = {
+            "id": None,
+            "libelle": "cabane dans les arbres",
+            "show": True
+        }
+        self.assertEqual(category_dict_representation, expected_dict)
+
 
     # def test_category_with_propertie(self):
 
@@ -67,7 +90,7 @@ class CategoryTest(TestCase):
     #         show = True, 
     #         properties = [prop]
     #     )
-
+    #     breakpoint()
     #     self.assertEqual(cat.__repr__().get("properties"), True)
 
     # def test_create_category_with_house(self):

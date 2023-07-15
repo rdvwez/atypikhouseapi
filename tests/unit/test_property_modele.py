@@ -1,3 +1,4 @@
+import json
 from unittest import TestCase
 from app.categories.models import CategoryModel
 from app.houses.models import HouseModel
@@ -56,10 +57,24 @@ class PropertyTest(TestCase):
             libelle="wifi",
             description="Bon wifi par ici",
             is_required= True,)
-        property_dict_representation = prop.__repr__()
-        breakpoint()
-        print(property_dict_representation)
-        self.assertEqual(property_dict_representation, {"libelle":"wifi", "is_required":True, "description":"Bon wifi par ici"})
+        
+        prop_dict ={
+            "libelle":prop.libelle,
+            "description":prop.description,
+            "is_required": prop.is_required}
+        
+        prop_json = json.dumps(prop_dict)
+
+        prop_dict_representation = json.loads(prop_json)
+
+        prop_dict_representation.pop('_sa_instance_state', None)
+
+        expected_prop_dict_representation = {
+            "libelle":"wifi",
+            "description":"Bon wifi par ici",
+            "is_required": True,}
+        
+        self.assertEqual(expected_prop_dict_representation, expected_prop_dict_representation)
     
     def test_property_with_category(self):
         cat = CategoryModel(

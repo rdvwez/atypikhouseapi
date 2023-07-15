@@ -80,7 +80,11 @@ class ReservationTest(BaseTest):
                 start_date = datetime.now(),
                 end_date = datetime.now(),
                 user_id=1,
-                house_id=1
+                house_id=1,
+                card_number = '4242424242424242',
+                card_exp_month = '03',
+                card_exp_year = '23',
+                cvc = '463'
                 )
 
             reservation_repository.save(reservation)
