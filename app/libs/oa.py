@@ -2,17 +2,21 @@ import os
 from flask import g
 from flask_oauthlib.client import OAuth
 
-oauth = OAuth()
+# from dotenv import load_dotenv
+import default_config as dc
 
+oauth = OAuth()
+tada = os.environ.get('STRIPE_API_SECRET_KEY')
+# breakpoint()
 github = oauth.remote_app('github',
     base_url='https://api.github.com/',
     access_token_url='https://github.com/login/oauth/access_token',
     authorize_url='https://github.com/login/oauth/authorize',
-    consumer_key=os.getenv("GITHUB_COSUMMER_KEY"),
-    consumer_secret=os.getenv("GITHUB_COSUMMER_SECRET"),
+    consumer_key= dc.GITHUB_COSUMMER_SECRET,
+    consumer_secret= dc.GITHUB_COSUMMER_SECRET,
     request_token_params={"scope":"user:email"},
     request_token_url=None,
-    access_token_method="POST"
+    access_token_method="POST" 
 )
 
 twitter = oauth.remote_app('twitter',
@@ -29,8 +33,8 @@ facebook = oauth.remote_app('facebook',
     request_token_url=None,
     access_token_url='/oauth/access_token',
     authorize_url='https://www.facebook.com/dialog/oauth',
-    consumer_key="783711930077559",
-    consumer_secret="c61a6247a34c6db886705cbf2c9feb4b",
+    consumer_key=dc.FACEBOOK_CONSUMMER_KEY,
+    consumer_secret=dc.FACEBOOK_CONSUMMER_SECRET,
     request_token_params={'scope': 'email'}
 
 )
@@ -42,8 +46,8 @@ google = oauth.remote_app(
     access_token_method="POST",
     access_token_url='https://accounts.google.com/o/oauth2/token',
     authorize_url='https://accounts.google.com/o/oauth2/auth',
-    consumer_key= "794179832332-3jkq8ia1ng9s4ej8q36c83umd05p6r1g.apps.googleusercontent.com",
-    consumer_secret="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",
+    consumer_key= dc.GOOGLE_OAUTH_CLIENT_ID,
+    consumer_secret=dc.GOOGLE_OAUTH_CLIENT_SECRET,
     request_token_params={'scope': 'email'}
 )
 

@@ -10,6 +10,9 @@ class ThematicRepository:
 
     def get_all(self):
         return ThematicModel.query.order_by(ThematicModel.id).all()
+    
+    def delete_all(self) -> None: # type: ignore
+        ThematicModel.query.delete()
 
     def get_thematic_by_id(self, thematic_id: int) -> ThematicModel:
         thematic = ThematicModel.query.get_or_404(thematic_id)

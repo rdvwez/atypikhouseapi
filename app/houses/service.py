@@ -6,6 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.houses.repository import HouseRepository
 from app.houses.models import HouseModel
+from app.libs.decorators import owner_required
 
 class HouseService:
 
@@ -20,48 +21,52 @@ class HouseService:
         """
         return self.house_repository.get_all()
 
+    @owner_required
     def get_house_by_id(self, house_id: int) -> HouseModel:
         return self.house_repository.get_house_by_id(house_id)
 
-
-    def create_house(self, house):
+    @owner_required
+    def create_house(self, house:HouseModel):
         try:
             self.house_repository.save(house)
             self.house_repository.commit()
-            return{"message": "house created successfully."}, 201
+            return house, 201
         except SQLAlchemyError:
             abort(500,"An error occurred while inserting the house")
 
+    @owner_required
     def update_house(self, house_id:int, house_data:Dict[str, None]):
         try:
+            
             house = self.house_repository.get_house_by_id(house_id)
             house.libelle = house_data.get("libelle", house.libelle)
-            house.description = house_data.get("libelle", house.description)
-            house.part_number = house_data.get("libelle", house.part_number)
-            house.bedroom_number = house_data.get("libelle", house.bedroom_number)
-            house.person_number = house_data.get("libelle", house.person_number)
-            house.parking_distance = house_data.get("libelle", house.parking_distance)
-            house.water = house_data.get("libelle", house.water)
-            house.power = house_data.get("libelle", house.power)
-            house.price = house_data.get("libelle", house.price)
-            house.latitude = house_data.get("libelle", house.latitude)
-            house.longitude = house_data.get("libelle", house.longitude)
-            house.address = house_data.get("address", house.longitude)
-            house.city = house_data.get("city", house.longitude)
-            house.country = house_data.get("country", house.longitude)
+            house.description = house_data.get("description", house.description)
+            house.bedroom_number = house_data.get("bedroom_number", house.bedroom_number)
+            house.person_number = house_data.get("person_number", house.person_number)
+            house.parking_distance = house_data.get("parking_distance", house.parking_distance)
+            house.water = house_data.get("water", house.water)
+            house.power = house_data.get("power", house.power)
+            house.price = house_data.get("price", house.price)
+            house.latitude = house_data.get("latitude", house.latitude)
+            house.longitude = house_data.get("longitude", house.longitude)
+            house.address = house_data.get("address", house.address)
+            house.city = house_data.get("city", house.city)
+            house.country = house_data.get("country", house.country)
             
             self.house_repository.save(house)
             self.house_repository.commit()
-            # return{"category updated"}, 200
+            
             return house
         except:
             abort(404, f"A house with id:{house_id} doesn't exist")
 
+    @owner_required
     def delete_house(self, house_id):
         try:
             house = self.house_repository.get_house_by_id(house_id)
             self.house_repository.delete(house)
             self.house_repository.commit()
-            return{"message":"house deleted"}, 200
+    
+            return{"message":"house deleted"}, 204
         except:
             abort(404, f"A category with id:{house_id} doesn't exist")

@@ -12,11 +12,17 @@ class ValueModel(db.Model):
     libelle = db.Column(db.String(40), unique=True, nullable=False)
     property_id = db.Column(db.Integer, db.ForeignKey("properties.id"), nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
-    property_object = db.relationship("PropertyModel", back_populates = "values")
+    property_object = db.relationship("PropertyModel", back_populates = "property_values")
     user = db.relationship("UserModel", back_populates = "values")
 
-    def __repr__(self) -> dict:
-        return self.__dict__
+    def __repr__(self) -> str:
+        return str(self.__dict__)
+    #     return str({
+    #         'id':self.id,
+    #         "libelle" :self.libelle,
+    # "property_id" : self.property_id,
+    # "user_id" : self.user_id,
+    #     })
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

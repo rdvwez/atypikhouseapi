@@ -2,9 +2,11 @@ from app.houses.models import HouseModel
 from app.users.models import UserModel
 from app.categories.models import CategoryModel
 from app.thematics.models import ThematicModel
+from app.images.models import ImageModel
 from app.houses.repository import HouseRepository
 from app.categories.repository import CategoryRepository
 from app.thematics.repository import ThematicRepository
+from app.images.repository import ImageRepository
 from app.users.repository import UserRepository
 from tests.base_test import BaseTest
 
@@ -15,8 +17,9 @@ category_repository = CategoryRepository()
 house_repository = HouseRepository()
 thematic_repository = ThematicRepository()
 user_repository = UserRepository()
+image_repository = ImageRepository()
 
-class HouseTest(BaseTest):
+class ImageTest(BaseTest):
 
     def test_crud(self) -> None:
 
@@ -25,7 +28,7 @@ class HouseTest(BaseTest):
             user = UserModel(
             email = "toto@gmail.com",
             password = "Le_passe_de_test",
-            is_custom = True,
+            is_customer = True,
             is_owner = False,
             is_admin = False,
         )
@@ -70,10 +73,22 @@ class HouseTest(BaseTest):
             house_repository.save(house)
             house_repository.commit()
 
-            self.assertIsNotNone(house_repository.get_house_by_id(1), "Did not find a house with id 1 after saving to db")
+            img = ImageModel(
+            path = "/images/madia/",
+            extension = ".pjpg",
+            basename = "paysage.jpg",
+            is_avatar = False,
+            house_id = 1,
+            user_id = 1
+            )
 
-            house_repository.delete(house)
+            image_repository.save(img)
+            image_repository.commit()
+
+            self.assertIsNotNone(image_repository.get_image_by_id(1), "Did not find a image with id 1 after saving to db")
+
+            house_repository.delete(img)
             house_repository.commit()
-            self.assertEqual(len(house_repository.get_all()), 0)
+            self.assertEqual(len(image_repository.get_all()), 0)
 
             

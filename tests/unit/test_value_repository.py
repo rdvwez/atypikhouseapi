@@ -28,7 +28,7 @@ class ValueTest(BaseTest):
                 phone_number = "+33 06 45 96 32 45",
                 email = "julien.moto@gmail.com",
                 password = "12345",
-                is_custom = True,
+                is_customer = True,
                 is_owner = False,
                 is_admin = False,
                 birth_date = datetime.now(),

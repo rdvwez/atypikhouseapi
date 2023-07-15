@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hatypik House Api | Home</title>
+    <link href="{{url_for('static', filename='home_page.css')}}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+
+    <div class="container-fluid">
+        <div class="jumbotron text-center">
+          <h1>Welcome to Hatypik House Api documentation</h1>
+          <h2> <p><em>See <a href="http://127.0.0.1:5000/api" > here</a> all the hatypik house endpoints </em></p></h2>
+        </div>
+        <div class="logo-container">
+          <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="hatypik house logo">
+        </div>
+        <footer class="text-center">
+          <hr>
+          <p><a href="#" target="_blank">Atypikhouse</a></p>
+        </footer>
+      </div>
+      
+
+</body>
+</html>

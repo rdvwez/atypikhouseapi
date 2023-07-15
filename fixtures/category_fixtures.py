@@ -1,7 +1,8 @@
 from faker import Faker
 
-from app.categories.service import CategoryService
+# from app.categories.service import CategoryService
 from app.categories.models import CategoryModel
+from app.categories.repository import CategoryRepository
 
 # fake = Faker(locale='fr_FR')
 
@@ -13,11 +14,13 @@ class  CategoryFixtures:
             "tini house", "cabane verticale", "tipi", "bateau", "inclassable"]
 
         self.fake = Faker(locale='fr_FR')
-        self.category_service = CategoryService()
+        # self.category_service = CategoryService()
+        self.category_repository = CategoryRepository()
 
 
     def load(self) -> None:
         
         for wording in self.categories_wordings:
             category = CategoryModel(libelle = wording, show = self.fake.boolean(chance_of_getting_true=50))
-            self.category_service.create_category(category)
+            self.category_repository.save(category)
+            self.category_repository.commit()
