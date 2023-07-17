@@ -23,7 +23,7 @@ You can  test this api in mode  Developpement mose: OnReadOnly and   OnWritable 
 	
 		name : Doe
 		firstname : Jhon
-		email : Jhon.dor@@hatypikhouse.fr
+		email : Jhon.doe@hatypikhouse.fr
 		passwod: password
 	
 
