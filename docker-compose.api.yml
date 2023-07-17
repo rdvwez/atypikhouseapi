@@ -5,7 +5,8 @@ networks:
 #       config:
 #         - subnet: 192.168.2.0/24
 services:
-  app:
+  api:
+    container_name: hatypikhouse_api
     build:
       context: .
       dockerfile: Dockerfile
@@ -101,6 +102,7 @@ services:
   #   depends_on:
   #     - db
   db:
+    container_name: hatypikhouse_db
     image: mysql:latest
     env_file:
       - .env
