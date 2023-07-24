@@ -28,8 +28,242 @@ You can  test this api in mode  Developpement mose: OnReadOnly and   OnWritable 
 	
 
 Enjoye Code :blush: 
-
 ##  Use HatypikHouse api OnReadOnly developpement mode:
+
+comming soon .....
+
+## User right presentation
+
+
+
+Three user rigth are defne in Hatypik House: Admin, Owner and Customer
+See in the following the table summarizing the accesses to the different parts of the perimeter according to the rights of the users
+
+
+
+
+
+<table border="1">
+    	<th>
+    	    <td>Operations</td>
+            <td>Admin</td>
+            <td>Owner</td>
+            <td>Customer</td>
+        </th>
+        <tr>
+            <td rowspan="4">Categories</td>
+            <td >Create</td>
+            <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Read</td>
+            <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Update</td>
+            <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+        <tr >
+            <td>Delete</td>
+            <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+         <tr>
+            <td rowspan="4">Thematics</td>
+            <td >Create</td>
+            <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Read</td>
+            <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Update</td>
+            <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        <tr>
+            <td>Delete</td>
+            <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td rowspan="4">Reservations</td>
+            <td >Create</td>
+             <td>✅️</td>
+            <td>✅️</td>
+            <td>✅️</td>
+        </tr>
+        <tr>
+            <td>Read</td>
+             <td>✅️</td>
+            <td>✅️</td>
+            <td>✅️</td>
+        </tr>
+        <tr>
+            <td>Update</td>
+             <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Delete</td>
+             <td>✅️</td>
+            <td>✅️</td>
+            <td>✅️</td>
+        </tr>
+        <tr>
+            <td rowspan="4">Houses</td>
+            <td >Create</td>
+            <td>✅️</td>
+            <td>✅️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Read</td>
+             <td>✅️</td>
+            <td>✅️</td>
+            <td>✅️</td>
+        </tr>
+        <tr>
+            <td>Update</td>
+             <td>✅️</td>
+            <td>✅️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Delete</td>
+             <td>✅️</td>
+            <td>✅️</td>
+            <td>✅️</td>
+        </tr>
+        <tr>
+            <td rowspan="4">Properties</td>
+            <td >Create</td>
+             <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Read</td>
+             <td>✅️</td>
+            <td>✅️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Update</td>
+             <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Delete</td>
+             <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td rowspan="4">Vlues</td>
+            <td >Create</td>
+            <td>✅️</td>
+            <td>✅️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Read</td>
+             <td>✅️</td>
+            <td>✅️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Update</td>
+              <td>✅️</td>
+            <td>✅️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Delete</td>
+             <td>✅️</td>
+            <td>✅️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td rowspan="4">Images</td>
+            <td >Create</td>
+              <td>✅️</td>
+            <td>✅️</td>
+            <td>✅️</td>
+        </tr>
+        <tr>
+            <td>Read</td>
+            <td>✅️</td>
+            <td>✅️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Update</td>
+              <td>✅️</td>
+            <td>✅️</td>
+            <td>✅️</td>
+        </tr>
+        <tr>
+            <td>Delete</td>
+              <td>✅️</td>
+            <td>✅️</td>
+            <td>✅️</td>
+        </tr>
+        <tr>
+            <td rowspan="4">Users</td>
+            <td >Create</td>
+            <td>✅️</td>
+            <td>✅️</td>
+            <td>✅️</td>
+        </tr>
+        <tr>
+            <td>Read</td>
+            <td>✅️</td>
+            <td>❌️</td>
+            <td>❌️</td>
+        </tr>
+        <tr>
+            <td>Update</td>
+             <td>✅️</td>
+            <td>✅️</td>
+            <td>✅️</td>
+        </tr>
+        <tr>
+            <td>Delete</td>
+            <td>✅️</td>
+            <td>✅️</td>
+            <td>✅️</td>
+        </tr>
+</table>
+
+## Dashboard lists and accessbilities
+
+|| Admin | Owner | Customer |
+|:--------------|:--------------|:-------------:|--------------:|
+| Category | ✅️ | ❌️ | ❌️|
+| Thematic |  ✅️ | ❌️ | ❌️|
+| House |  ✅️ | ✅️ | ❌️|
+| Property |  ✅️ | ❌️ | ❌️|
+| Value |  ✅️ | ✅️ | ❌️|
+| Reservation |  ✅️ | ✅️ | ✅️|
+| Image |  ✅️ | ✅️ | ✅️|
+| User |  ✅️ | ❌️ | ❌️|
+
 
 
 <!-- - Connect database container with this commande:
