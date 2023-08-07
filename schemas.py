@@ -270,6 +270,13 @@ class ReservationLimitedSchema(Schema):
     status = fields.Enum(ReservationStatus)
     amount = fields.Float(metadata= {'nullable': True})
 
+class ResearchSchema(Schema):
+    category_id= fields.Int()
+    thematic_id= fields.Int()
+    start_date=fields.DateTime(metadata= {'require': True})
+    end_date = fields.DateTime(metadata= {'require': True})
+    person_nbr= fields.Int()
+
 
 
 

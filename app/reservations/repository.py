@@ -18,6 +18,10 @@ class ReservationRepository:
         reservation = ReservationModel.query.get_or_404(reservation_id)
         return reservation
     
+    def get_reservations_by_status(self, status: str) -> List[ReservationModel]:
+        reservations = ReservationModel.query.filter_by(status=status).all()
+        return reservations
+    
     def delete_all(self) -> None:
         ReservationModel.query.delete()
 
