@@ -117,6 +117,10 @@ class UserLimitedSchema(Schema):
     firstname = fields.Str(metadata= {'require': False})
     name = fields.Str(metadata= {'require': True})
 
+class UserSuperLimitedSchema(Schema):
+    firstname = fields.Str(metadata= {'require': False})
+    name = fields.Str(metadata= {'require': True})
+
 ######### House schemas ###############################################
 
 class PlainHouseSchema(Schema):
@@ -178,6 +182,21 @@ class HouseLimitedSchema(Schema):
     parking_distance = fields.Integer(metadata= {'nullable': False})
     description = fields.Str(metadata= {'require': False})
     user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
+
+class HouseLimitedSchemaForResearch(Schema):
+    id = fields.Int(metadata= {'require': True}, dump_only=True)
+    libelle = fields.Str(metadata= {'require': True})
+    area = fields.Integer(metadata= {'nullable': False})
+    water = fields.Bool(required= True)
+    power = fields.Bool(required= True)
+    price = fields.Integer(metadata= {'require': False})
+    person_number = fields.Integer(metadata= {'require': False})
+    parking_distance = fields.Integer(metadata= {'nullable': False})
+    description = fields.Str(metadata= {'require': False})
+    user = fields.Nested(lambda: UserSuperLimitedSchema(), dump_only = True)
+    category = fields.Nested(lambda: CategoryLimitedSchema(), dump_only = True)
+    thematic = fields.Nested(lambda: ThematicLimitedSchema(), dump_only = True)
+    images = fields.List(fields.Nested(lambda: ImageWithoutHousesSchema()), dump_only = True)
 
 ######################### images schemas#######################
 

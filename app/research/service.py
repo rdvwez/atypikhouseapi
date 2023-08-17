@@ -31,13 +31,13 @@ class ResearchService:
         self.house_repository = HouseRepository()
         self.reservation_repository = ReservationRepository()
 
-    def sort_houses_using_category_id(self, houses:list[HouseModel], category_id:int)-> list[HouseModel]:
+    def sort_houses_using_category_id(self, houses:List[HouseModel], category_id:int)-> List[HouseModel]:
         return [house for house in houses if house.category_id == category_id]
     
-    def sort_houses_using_thematic_id(self, houses:list[HouseModel], thematic_id:int)-> list[HouseModel]:
+    def sort_houses_using_thematic_id(self, houses:List[HouseModel], thematic_id:int)-> List[HouseModel]:
         return [house for house in houses if house.thematic_id == thematic_id]
     
-    def sort_houses_by_nbr_person(self, houses:list[HouseModel], person_nbr:int)-> list[HouseModel]:
+    def sort_houses_by_nbr_person(self, houses:List[HouseModel], person_nbr:int)-> List[HouseModel]:
         return [house for house in houses if house.person_number == person_nbr]
 
     def get_reservation(self, reservations: List[ReservationModel], house_id: int)-> ReservationModel:
@@ -59,7 +59,7 @@ class ResearchService:
                     matched_house_ids.append(house.id)  
         return  matched_house_ids                
 
-        search_result = [sorted_house for sorted_house in cat_them_np_sorted_houses if house.id not in  matched_house_ids]
+        # search_result = [sorted_house for sorted_house in cat_them_np_sorted_houses if house.id not in  matched_house_ids]
 
     def find_available_houses(self, research_object:Research)->List[HouseModel]:
         houses = self.house_repository.get_all()
@@ -79,7 +79,7 @@ class ResearchService:
                                             reserved_house_ids,
                                             research_object,
                                             completed_reservations)
-        
+                
         available_houses = [sorted_house for sorted_house in  cat_them_np_sorted_houses if sorted_house.id not in non_available_house_ids]
-
+        
         return available_houses

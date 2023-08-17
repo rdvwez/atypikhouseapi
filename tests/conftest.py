@@ -321,7 +321,9 @@ def init_database(app):
         card_number  = "4243424342434243",
         card_exp_month  = 12,
         card_exp_year  = 26,
-        cvc = 465
+        cvc = 465,
+        start_date = datetime(2023, 6, 3, 10, 0, 0),
+        end_date = datetime(2023, 6, 9, 10, 0, 0)
     )
     reservation2 = ReservationModel(
         status = "COMPLETED",
@@ -331,7 +333,9 @@ def init_database(app):
         card_number  = "4243424342434224",
         card_exp_month  = 1,
         card_exp_year  = 27,
-        cvc = 465
+        cvc = 465,
+        start_date = datetime(2023, 6, 10, 10, 0, 0),
+        end_date = datetime(2023, 6, 13, 10, 0, 0)
     )
     reservation_repository.save(reservation1)
     reservation_repository.save(reservation2)
