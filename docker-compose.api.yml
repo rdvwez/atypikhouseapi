@@ -111,7 +111,7 @@ services:
     networks:
       - public
     restart: always
-    container_name: db
+    # container_name: db
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}

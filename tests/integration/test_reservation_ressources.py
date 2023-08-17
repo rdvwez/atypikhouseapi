@@ -1,4 +1,4 @@
-import stripe
+
 import pytest
 
 from unittest import mock
