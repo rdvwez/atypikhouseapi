@@ -1,6 +1,5 @@
 import pytest
 from .test_order import pytestmark
-from datetime import datetime
 
 pytestmark = pytest.mark.run(order=9)
 
