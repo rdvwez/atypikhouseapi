@@ -40,6 +40,8 @@ EXPOSE 5000
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 
+# RUN apk update && apk add bash
+
 # On Commande pour exécuter l'application Flask
 CMD ["python3", "app.py"]
 
