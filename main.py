@@ -93,7 +93,7 @@ def create_app(db_url=None):
     def create_tables_load_fixtures():
         db.create_all()
         app.logger.info('Database tables has been created with success')
-        # load_all_fixtures()
+        load_all_fixtures()
         app.logger.info('Fixtures have been loaded successfully')
     #################################################
 

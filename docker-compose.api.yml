@@ -53,6 +53,7 @@ services:
       - .:/app
     depends_on:
       - db
+    # command: bash -c 'while ! nc -z db 3306; do sleep 1; done; python3 app.py'
   # test:
   #   build:
   #     context: .

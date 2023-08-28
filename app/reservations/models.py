@@ -29,10 +29,10 @@ class ReservationModel(db.Model):
     status = db.Column(Enum(ReservationStatus), default=ReservationStatus.PENDING, nullable=False)
     amount = db.Column(db.Float, nullable=False)
 
-    card_number = db.Column(db.String(16), nullable=False)
+    card_number = db.Column(db.String(20), nullable=False)
     card_exp_month = db.Column(db.Integer, nullable=False)
     card_exp_year = db.Column(db.Integer, nullable=False)
-    cvc = db.Column(db.String(3), nullable=False)
+    cvc = db.Column(db.String(4), nullable=False)
 
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
