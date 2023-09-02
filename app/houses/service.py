@@ -6,7 +6,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.houses.repository import HouseRepository
 from app.houses.models import HouseModel
-from app.libs.decorators import owner_required
 
 class HouseService:
 
@@ -20,12 +19,10 @@ class HouseService:
         :return: a list of House objects
         """
         return self.house_repository.get_all()
-
-    @owner_required
+ 
     def get_house_by_id(self, house_id: int) -> HouseModel:
         return self.house_repository.get_house_by_id(house_id)
 
-    @owner_required
     def create_house(self, house:HouseModel):
         try:
             self.house_repository.save(house)
@@ -34,7 +31,6 @@ class HouseService:
         except SQLAlchemyError:
             abort(500,"An error occurred while inserting the house")
 
-    @owner_required
     def update_house(self, house_id:int, house_data:Dict[str, None]):
         try:
             
@@ -60,7 +56,6 @@ class HouseService:
         except:
             abort(404, f"A house with id:{house_id} doesn't exist")
 
-    @owner_required
     def delete_house(self, house_id):
         try:
             house = self.house_repository.get_house_by_id(house_id)

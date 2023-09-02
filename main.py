@@ -3,6 +3,8 @@ import logging
 
 from flask import Flask, jsonify, render_template
 from flask_smorest import Api
+# from flask_restful_swagger_3 import Api
+
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 
@@ -61,7 +63,7 @@ def create_app(db_url=None):
 
     db.init_app(app)
 
-    api = Api(app)
+    api = Api(app, spec_kwargs={'security': [{'Bearer Auth': []}]})
 
     
     app.config["JWT_SECRET_KEY"] = dc.JWT_SECRET_KEY
@@ -97,15 +99,6 @@ def create_app(db_url=None):
         load_all_fixtures()
         app.logger.info('Fixtures have been loaded successfully')
     #################################################
-
-    
-    # initialisation des tables et chargement des données initiales
-    # def init_db():
-    #     with app.app_context():
-    #         db.create_all()
-    #         load_all_fixtures()
-
-    # app.init_app(init_db)
 
 
 
