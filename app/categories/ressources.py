@@ -5,6 +5,7 @@ from flask_smorest import Blueprint, abort
 from injector import inject
 from flask_jwt_extended import jwt_required
 
+from app.libs.decorators import admin_required
 from app.categories.models import CategoryModel
 from app.categories.service import CategoryService
 from schemas import CategorySchema, CategoryUpdateSchema, HouseSchema
@@ -21,6 +22,7 @@ class HousesInCategory(MethodView):
         self.category_service = CategoryService()
 
     @jwt_required()
+    @admin_required
     @blp.response(200, HouseSchema(many=True))
     def get(self, category_id:int):
         return self.category_service.get_houses_in_category(category_id) 
@@ -34,17 +36,20 @@ class Category(MethodView):
         self.category_service = CategoryService()
 
     @jwt_required()
+    @admin_required
     @blp.response(200, CategorySchema)
     def get(self, category_id:int):
         
         return self.category_service.get_category_by_id(category_id) 
 
     @jwt_required()
+    @admin_required
     def delete(self, category_id):
         return self.category_service.delete_category(category_id)
 
     
     @jwt_required(fresh=True)
+    @admin_required
     @blp.arguments(CategoryUpdateSchema)
     @blp.response(200, CategorySchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
@@ -64,10 +69,12 @@ class CategoryList(MethodView):
         self.category_service = CategoryService()
 
     @blp.response(200, CategorySchema(many=True))
+    @blp.doc(tags=['Categories'], security=[{}])
     def get(self):
         return self.category_service.get_all_categories()    
 
     @jwt_required(fresh=True)
+    @admin_required
     @blp.arguments(CategorySchema)
     @blp.response(201, CategorySchema)
     # category_data contain the json wich is the validated fileds that the schamas requested

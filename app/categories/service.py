@@ -10,7 +10,6 @@ from app.categories.repository import CategoryRepository
 from app.houses.models import HouseModel
 from app.categories.models import CategoryModel
 from app.users.repository import UserRepository
-from app.libs.decorators import admin_required
 
 
 class CategoryService:
@@ -29,12 +28,10 @@ class CategoryService:
         
         return self.category_repository.get_all()
 
-    @admin_required
     def get_category_by_id(self, category_id: int) -> CategoryModel :
         return self.category_repository.get_category_by_id(category_id)
         
 
-    @admin_required
     def create_category(self, category):
         try:
             self.category_repository.save(category)
@@ -43,7 +40,6 @@ class CategoryService:
         except SQLAlchemyError:
             abort(500,"An error occurred while inserting the category")
 
-    @admin_required
     def update_category(self, category_id:int, category_data:Dict[str, None]):
         try:
             category = self.category_repository.get_category_by_id(category_id)
@@ -55,7 +51,6 @@ class CategoryService:
         except:
             abort(404, f"A category with id:{category_id} doesn't exist")
 
-    @admin_required
     def delete_category(self, category_id):
         try:
             category = self.category_repository.get_category_by_id(category_id)
@@ -65,7 +60,6 @@ class CategoryService:
         except:
             abort(404, f"A category with id:{category_id} doesn't exist")
 
-    @admin_required
     def get_houses_in_category(self, category_id:int) -> List[HouseModel]:
         """Get Houses which belong to category
 
