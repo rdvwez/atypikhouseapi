@@ -97,7 +97,6 @@ class UserService:
         user = UserModel(email=user_data["email"], password = pbkdf2_sha256.hash(user_data["password"]))
         # try:
         self.user_repository.save(user)
-        # self.user_repository.commit()
 
         user = self.user_repository.get_user_by_email(email = user.email)
         # res = self.send_confirmation_mail( user_id = user.id, email = user.email)
@@ -106,19 +105,9 @@ class UserService:
             return{"message": "Account created successfully, an email with the activation link has been sent to your emeil addresse, please check."}, 201
         else:
 
-        
-            # self.send_confirmation_email( user_id = user.id, email = user.email)
-
-        # except MailGunException as e:
-
             self.user_repository.delete(user)
             self.user_repository.commit()
             return {"message": str(res)}, 500
-
-        # except:
-        #     traceback.print_exc()
-        #     return {"message":"Failed to create Account"}, 400
-
         
     
     def login(self, credentials:Dict[str,str]):
