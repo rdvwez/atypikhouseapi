@@ -6,7 +6,7 @@ from injector import inject
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import marshal
 
-from app.libs import image_helper
+from app.libs.decorators import owner_required
 from app.images.service import ImageService
 from app.images.models import ImageModel
 from app.libs.decorators import owner_required
@@ -28,6 +28,7 @@ class Image(MethodView):
         self.image_schema = ImageSchema()
 
     @jwt_required()
+    @owner_required
     @blp.response(200, ImageSchema)
     def get(self, image_id:int):
         """
@@ -36,6 +37,7 @@ class Image(MethodView):
         return self.image_service.get_image_by_id(image_id)
 
     @jwt_required()
+    @owner_required
     def delete(self, image_id:int):
         """
         Returns the Success deletion image
@@ -44,6 +46,7 @@ class Image(MethodView):
 
 
     @jwt_required(fresh=True)
+    @owner_required
     @blp.arguments(PlainImageUpdateSchema) 
     @blp.response(200, ImageSchema)
     def put(self, *args, **kwargs):
@@ -64,6 +67,7 @@ class ImageUpload(MethodView):
         self.image_schema = UploadImageSchema()
 
     @jwt_required(fresh=True)
+    @owner_required
     @blp.arguments(UploadImageSchema)
     @blp.response(201, ImageSchema)
     def post(self,image_data ):
@@ -81,6 +85,7 @@ class ImageList(MethodView):
         self.image_service = ImageService()
 
     @blp.response(200, ImageSchema(many=True))
+    @blp.doc(tags=['Images'], security=[{}])
     def get(self):
         return self.image_service.get_all_images()
 

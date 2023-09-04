@@ -14,7 +14,7 @@ from app.libs import image_helper
 
 from app.images.repository import ImageRepository
 from app.images.models import ImageModel
-from app.libs.decorators import owner_required
+
 
 FOLDER = 'madias'
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024
@@ -34,7 +34,6 @@ class ImageService:
         """
         return self.image_repository.get_all()
 
-    @owner_required
     def get_image_by_id(self, image_id: int) -> ImageModel:
         return self.image_repository.get_image_by_id(image_id)
     
@@ -65,7 +64,6 @@ class ImageService:
         #         current_user_id = get_jwt_identity() 
         #         return f"avatars/user_{current_user_id}" , True
 
-    @owner_required
     def create_image(self, image:ImageModel)->ImageModel:
         self.image_repository.save(image)
         self.image_repository.commit()
@@ -96,7 +94,6 @@ class ImageService:
             
         #     return {"image": f"Extension {extension} is not allowed."}, 400
 
-    @owner_required
     def upload_image(self, image_file: FileStorage ):
 
         """
@@ -141,7 +138,6 @@ class ImageService:
         self.image_repository.save(image)
         self.image_repository.commit()
 
-    @owner_required
     def update_image(self, updated_image_data:dict, image_id:int)-> Tuple[ImageModel, Literal[200]]:
         try:
             image = self.image_repository.get_image_by_id(image_id)
@@ -157,7 +153,6 @@ class ImageService:
                 abort(404, f"An Image with id:{image_id} doesn't exist")
 
 
-    @owner_required
     def delete_image(self, image_id:int):
         image = self.image_repository.get_image_by_id(image_id)
        

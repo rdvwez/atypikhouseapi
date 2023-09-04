@@ -17,7 +17,7 @@ class ResearchEngin(MethodView):
         self.research_service = ResearchService()
         self.house_schema = HouseSchema()
 
-
+    @blp.doc(tags=['Research'], security=[{}])
     @blp.arguments(ResearchSchema)
     @blp.response(201, HouseLimitedSchemaForResearch(many=True))
     def post(self, research_data):

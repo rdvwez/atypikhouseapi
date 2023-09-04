@@ -3,19 +3,17 @@ import logging
 
 from flask import Flask, jsonify, render_template
 from flask_smorest import Api
+# from flask_restful_swagger_3 import Api
+
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 
 from app.db import db
 from blocklist import BLOCKLIST
-from app.libs.oa  import oauth
-# from fixtures import fixtures_loader
 from fixtures.fixtures_loader import load_all_fixtures
 from flask_uploads import configure_uploads,  UploadSet, IMAGES
 import default_config as dc
-# import models
 
-# from app.libs.image_helper import IMAGE_SET
 from app.categories.ressources import blp as CategoryBleuprint
 from app.houses.ressources import blp as HouseBleuprint
 from app.users.ressources import blp as UsersBleuprint
@@ -61,7 +59,7 @@ def create_app(db_url=None):
 
     db.init_app(app)
 
-    api = Api(app)
+    api = Api(app, spec_kwargs={'security': [{'Bearer Auth': []}]})
 
     
     app.config["JWT_SECRET_KEY"] = dc.JWT_SECRET_KEY
@@ -93,19 +91,9 @@ def create_app(db_url=None):
     def create_tables_load_fixtures():
         db.create_all()
         app.logger.info('Database tables has been created with success')
-        # il manque ceci sur master
         load_all_fixtures()
         app.logger.info('Fixtures have been loaded successfully')
-    #################################################
-
-    
-    # initialisation des tables et chargement des données initiales
-    # def init_db():
-    #     with app.app_context():
-    #         db.create_all()
-    #         load_all_fixtures()
-
-    # app.init_app(init_db)
+    #####################################
 
 
 

@@ -9,7 +9,7 @@ from flask_jwt_extended import jwt_required
 from app.thematics.models import ThematicModel
 from app.thematics.service import ThematicService
 from schemas import ThematicSchema, ThematicUpdateSchema, HouseSchema
-
+from app.libs.decorators import admin_required
 
 
 
@@ -24,6 +24,7 @@ class HousesInThematic(MethodView):
         self.thematic_service = ThematicService()
 
     @jwt_required()
+    @admin_required
     @blp.response(200, HouseSchema(many=True))
     def get(self, thematic_id):
         return self.thematic_service.get_houses_in_thematic(thematic_id) 
@@ -37,16 +38,19 @@ class Category(MethodView):
         self.thematic_service = ThematicService()
 
     @jwt_required()
+    @admin_required
     @blp.response(200, ThematicSchema)
     def get(self, thematic_id:int):
         return self.thematic_service.get_thematic_by_id(thematic_id) 
 
     @jwt_required()
+    @admin_required
     def delete(self, thematic_id:int):
         return self.thematic_service.delete_thematic(thematic_id)
 
     #TODO: il faut être connecté et admin pour acceder à cette route
     @jwt_required(fresh=True)
+    @admin_required
     @blp.arguments(ThematicUpdateSchema)
     @blp.response(200, ThematicSchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
@@ -63,11 +67,12 @@ class ThematicList(MethodView):
 
 
     @blp.response(200, ThematicSchema(many=True))
+    @blp.doc(tags=['Thematics'], security=[{}])
     def get(self):
-        # return "ERT"
         return self.thematic_service.get_all()
 
     @jwt_required(fresh=True)
+    @admin_required
     @blp.arguments(ThematicSchema)
     @blp.response(201, ThematicSchema)
     # category_data contain the json wich is the validated fileds that the schamas requested

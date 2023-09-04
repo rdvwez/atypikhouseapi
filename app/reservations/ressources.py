@@ -5,6 +5,7 @@ from flask_smorest import Blueprint, abort
 from injector import inject
 from flask_jwt_extended import jwt_required
 
+from app.libs.decorators import owner_required, customer_required
 from app.reservations.models import ReservationModel
 from app.reservations.service import ReservationService
 from schemas import ReservationSchema, ReservationUpdateSchema
@@ -34,20 +35,32 @@ class Reservation(MethodView):
         self.reservation_service = ReservationService()
 
     @jwt_required()
+    @customer_required
     @blp.response(200, ReservationSchema)
     def get(self, reservation_id:int):
+        """
+        Get a reservation
+        """
         return self.reservation_service.get_reservation_by_id(reservation_id) 
 
     @jwt_required()
+    @owner_required
     def delete(self, reservation_id):
+        """
+        Delete a reservation
+        """
         return self.reservation_service.delete_reservation(reservation_id)
 
     #TODO: il faut être connecté et admin pour acceder à cette route
     @jwt_required(fresh=True)
+    @owner_required
     @blp.arguments(ReservationUpdateSchema)
     @blp.response(200, ReservationSchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
     def put(self, *args, **kwargs):
+        """
+        Update a reservation
+        """
         return self.reservation_service.update_reservation(kwargs["reservation_id"], args[0])
         
 
@@ -62,10 +75,14 @@ class ReservationList(MethodView):
     @jwt_required()
     @blp.response(200, ReservationSchema(many=True))
     def get(self):
+        """
+        Expected for token and return list of reservations of the current user
+        """
         return self.reservation_service.get_all_reservations()
 
         
     @jwt_required(fresh=True)
+    @customer_required
     @blp.arguments(ReservationSchema)
     @blp.response(201, ReservationSchema)
     # category_data contain the json wich is the validated fileds that the schamas requested

@@ -10,7 +10,6 @@ from app.thematics.repository import ThematicRepository
 from app.houses.models import HouseModel
 from app.thematics.models import ThematicModel
 from app.users.repository import UserRepository
-from app.libs.decorators import admin_required
 
 
 class ThematicService:
@@ -28,11 +27,9 @@ class ThematicService:
         """
         return self.thematic_repository.get_all()
     
-    @admin_required
     def get_thematic_by_id(self, thematic_id):
             return self.thematic_repository.get_thematic_by_id(thematic_id)
 
-    @admin_required
     def create_thematic(self, thematic):
         try:
             self.thematic_repository.save(thematic)
@@ -41,7 +38,6 @@ class ThematicService:
         except SQLAlchemyError:
             abort(500,"An error occurred while inserting the thematic")
 
-    @admin_required
     def update_thematic(self, thematic_id:int, thematic_data:Dict[str, None]):
         try:
             thematic = self.thematic_repository.get_thematic_by_id(thematic_id)
@@ -53,7 +49,6 @@ class ThematicService:
         except:
             abort(404, f"A thematic with id:{thematic_id} doesn't exist")
 
-    @admin_required
     def delete_thematic(self, thematic_id):  
         try:
             thematic = self.thematic_repository.get_thematic_by_id(thematic_id)
@@ -63,7 +58,6 @@ class ThematicService:
         except:
             abort(404, message=f"A thematic with id:{thematic_id} doesn't exist")
     
-    @admin_required
     def get_houses_in_thematic(self, thematic_id:int) -> List[HouseModel]:
         """Get Houses which belong to category
 

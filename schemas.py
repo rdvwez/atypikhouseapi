@@ -171,6 +171,9 @@ class HouseSchema(PlainHouseSchema):
     thematic = fields.Nested(lambda: ThematicLimitedSchema(), dump_only = True)
     images = fields.List(fields.Nested(lambda: ImageWithoutHousesSchema()), dump_only = True)
 
+class HouseCitiesSchema(Schema):
+    city = fields.Str(metadata= {'require': False})
+
 class HouseLimitedSchema(Schema):
     id = fields.Int(metadata= {'require': True}, dump_only=True)
     libelle = fields.Str(metadata= {'require': True})

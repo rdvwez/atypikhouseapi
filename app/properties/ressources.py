@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required
 # from injector import inject
 # from service import CategoryService
 
+from app.libs.decorators import admin_required
 from app.properties.models import PropertyModel
 from app.properties.service import PropertyService
 from schemas import PropertySchema, PropertyUpdateSchema, HouseSchema
@@ -22,16 +23,19 @@ class Property(MethodView):
         self.property_service = PropertyService()
 
     @jwt_required()
+    @admin_required
     @blp.response(200, PropertySchema)
     def get(self, property_id:int):
         return self.property_service.get_property_by_id(property_id) 
 
     @jwt_required()
+    @admin_required
     def delete(self, property_id):
         return self.property_service.delete_property(property_id)
 
     
     @jwt_required(fresh=True)
+    @admin_required
     @blp.arguments(PropertyUpdateSchema)
     @blp.response(200, PropertySchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
@@ -48,10 +52,12 @@ class PropertyList(MethodView):
 
 
     @blp.response(200, PropertySchema(many=True))
+    @admin_required
     def get(self):
         return self.property_service.get_all_properties()
 
     @jwt_required(fresh=True)
+    @admin_required
     @blp.arguments(PropertySchema)
     @blp.response(201, PropertySchema)
     # property_data contain the json wich is the validated fileds that the schamas requested

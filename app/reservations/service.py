@@ -20,7 +20,6 @@ from app.users.repository import UserRepository
 
 from app.reservations.repository import ReservationRepository
 from app.reservations.models import ReservationModel
-from app.libs.decorators import owner_required, admin_required, customer_required
 from app.users.repository import UserRepository
 from app.houses.repository import HouseRepository
 from app.libs.stripe_helper import create_payment_method, create_stripe_customer, attach_paymentmethod_to_customer, create_subscription
@@ -37,7 +36,6 @@ class ReservationService:
          self.user_repository = UserRepository()
          self.houseRepository = HouseRepository()
 
-    @customer_required
     def get_all_reservations(self)-> List[ReservationModel]:
         """
         Return all reservations
@@ -46,20 +44,20 @@ class ReservationService:
     
         reservations  = self.reservation_repository.get_all()
         curent_user = self.user_repository.get_user_by_id(get_jwt_identity())
-        if curent_user.is_customer:
-            return [reservation for reservation in reservations if reservation.user_id == curent_user.id ]
-            
-        elif curent_user.is_owner:
+        
+        if curent_user.is_owner:
             owner_reservation = []
             for reservation in reservations:
                 house = self.houseRepository.get_house_by_id(reservation.house_id)
                 if house.user_id == curent_user.id:
                     owner_reservation.append(reservation)
-            return owner_reservation 
+            return owner_reservation
+        
+        elif curent_user.is_customer:
+            return [reservation for reservation in reservations if reservation.user_id == curent_user.id ]
         
         return self.reservation_repository.get_all()
 
-    @customer_required
     def get_reservation_by_id(self, reservation_id: int) -> ReservationModel:
         return self.reservation_repository.get_reservation_by_id(reservation_id)
     
@@ -74,7 +72,6 @@ class ReservationService:
         stripe_customer_id = create_stripe_customer(user_email)
         return payment_methode_id, stripe_customer_id
 
-    @customer_required
     def create_reservation(self, reservation:ReservationModel):
         """
         Expected for token and a reservatins data from the request body
@@ -129,7 +126,6 @@ class ReservationService:
             return{"message": "reservation error"}, 500
         return reservation, 201
 
-    @owner_required
     def update_reservation(self, reservation_id:int, reservation_data:Dict[str, None]):
         
         try:
@@ -145,7 +141,6 @@ class ReservationService:
         except Exception as err:
             abort(404, f"A reservation with id:{reservation_id} doesn't exist")
 
-    @owner_required
     def delete_reservation(self, reservation_id):
         try:
             reservation = self.reservation_repository.get_reservation_by_id(reservation_id)

@@ -21,13 +21,6 @@ class CategoryModel(db.Model):
 
     def __repr__(self) -> str:
         return str(self.__dict__)
-        # return str(
-        #     {
-        #     'id':self.id,
-        #     "libelle":self.libelle,
-        #     "show":self.show,
-        #     }
-        # )
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
