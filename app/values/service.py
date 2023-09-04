@@ -7,10 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import  get_jwt_identity
 
 from app.values.repository import ValueRepository
-from app.houses.models import HouseModel
-from app.values.models import ValueModel
 from app.users.repository import UserRepository
-from app.libs.decorators import owner_required
 
 
 
@@ -25,15 +22,16 @@ class ValueService:
     def get_all_values(self):
         """
         Return all values
-        :return: a list of Value objects
+        :return: a list of Values
         """
-        return self.value_repository.get_all()
+        curent_user_id = get_jwt_identity()
+        values = self.value_repository.get_all()
+        current_user_values = [value for value in values if value.user_id == curent_user_id]
+        return current_user_values
 
-    @owner_required
     def get_value_by_id(self, value_id):
             return self.value_repository.get_value_by_id(value_id)
 
-    @owner_required
     def create_value(self, value):
         try:
             self.value_repository.save(value)
@@ -42,7 +40,6 @@ class ValueService:
         except SQLAlchemyError:
             abort(500,"An error occurred while inserting the value")
 
-    @owner_required
     def update_value(self, value_id:int, value_data:Dict[str, None]):
         try:
             value = self.value_repository.get_value_by_id(value_id)
@@ -54,7 +51,6 @@ class ValueService:
         except:
             abort(404, f"A value with id:{value_id} doesn't exist")
 
-    @owner_required
     def delete_value(self, value_id:int):
         try:
             value = self.value_repository.get_value_by_id(value_id)
