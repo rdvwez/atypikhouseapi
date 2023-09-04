@@ -10,14 +10,10 @@ from dotenv import load_dotenv
 
 from app.db import db
 from blocklist import BLOCKLIST
-from app.libs.oa  import oauth
-# from fixtures import fixtures_loader
 from fixtures.fixtures_loader import load_all_fixtures
 from flask_uploads import configure_uploads,  UploadSet, IMAGES
 import default_config as dc
-# import models
 
-# from app.libs.image_helper import IMAGE_SET
 from app.categories.ressources import blp as CategoryBleuprint
 from app.houses.ressources import blp as HouseBleuprint
 from app.users.ressources import blp as UsersBleuprint
@@ -95,10 +91,9 @@ def create_app(db_url=None):
     def create_tables_load_fixtures():
         db.create_all()
         app.logger.info('Database tables has been created with success')
-        # il manque ceci sur master
-        # load_all_fixtures()
+        load_all_fixtures()
         app.logger.info('Fixtures have been loaded successfully')
-    #################################################
+    #####################################
 
 
 
