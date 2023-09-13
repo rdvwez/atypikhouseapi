@@ -45,7 +45,7 @@ class ValueList(MethodView):
     def __init__(self):
         self.value_service = ValueService()
 
-
+    @owner_required
     @blp.response(200, ValueSchema(many=True))
     def get(self):
         # return "ERT"

@@ -1,7 +1,6 @@
-from typing import List, Dict
-from flask import request,  jsonify
+from typing import Dict
 from flask.views import MethodView
-from flask_smorest import Blueprint, abort
+from flask_smorest import Blueprint
 from injector import inject
 from flask_jwt_extended import jwt_required
 

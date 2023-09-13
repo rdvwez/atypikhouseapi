@@ -26,7 +26,7 @@ class UserFixtures:
                 lambda_name = "Doe"
                 lambda_first_name = "Jhon"
 
-                lambda_email = f"{lambda_first_name}.{lambda_name[0]}@hatypikhouse.fr"
+                lambda_email = f"{lambda_first_name}.{lambda_name}@hatypikhouse.fr"
             else:
                 gender = self.fake.boolean(chance_of_getting_true=50)
 
