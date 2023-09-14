@@ -5,19 +5,13 @@ from injector import inject
 from flask_jwt_extended import jwt_required
 
 
-from schemas import HouseSchema, HouseUpdateSchema, HouseCitiesSchema
+from schemas import HouseSchema, HouseUpdateSchema, HouseCitiesSchema, HouseFilterSchema, HouseLimitedSchemaForResearch
 from app.houses.service import HouseService
 from app.houses.models import HouseModel
 from app.libs.decorators import owner_required
-
-
-
+from app.houses.service import Filters
 
 blp = Blueprint("Houses",__name__,description="Operations on houses",url_prefix="/api")
-
-
-
-
 
 @blp.route("/house/<string:house_id>")
 class Category(MethodView):
@@ -90,3 +84,16 @@ class CityList(MethodView):
         """
         cities = [ house.city for house in self.house_service.get_all_houses()]
         return cities
+    
+@blp.route("/house/filter")
+class HouseFilter(MethodView):
+    @inject
+    def __init__(self):
+        self.house_service = HouseService()
+
+    @blp.arguments(HouseFilterSchema)
+    @blp.response(201, HouseLimitedSchemaForResearch(many=True))
+    @blp.doc(tags=['Houses'], security=[{'Bearer': []}])
+    def post(self, filter_data):
+        filters = Filters(**filter_data)
+        return self.house_service.filter_houses(filters)
