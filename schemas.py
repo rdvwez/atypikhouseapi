@@ -201,6 +201,11 @@ class HouseLimitedSchemaForResearch(Schema):
     thematic = fields.Nested(lambda: ThematicLimitedSchema(), dump_only = True)
     images = fields.List(fields.Nested(lambda: ImageWithoutHousesSchema()), dump_only = True)
 
+class HouseFilterSchema(Schema):
+    category_id= fields.Int()
+    thematic_id= fields.Int()
+    city = fields.Str() 
+
 ######################### images schemas#######################
 
 class FileStorageField(fields.Field):

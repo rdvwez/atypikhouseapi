@@ -24,17 +24,17 @@ class Research:
     person_nbr: int
 
 class ResearchService:
-    @inject
+    # @inject
     def __init__(self):
         self.category_repository = CategoryRepository()
         self.thematic_repository = ThematicRepository()
         self.house_repository = HouseRepository()
         self.reservation_repository = ReservationRepository()
 
-    def sort_houses_using_category_id(self, houses:List[HouseModel], category_id:int)-> List[HouseModel]:
+    def sort_houses_by_category_id(self, houses:List[HouseModel], category_id:int)-> List[HouseModel]:
         return [house for house in houses if house.category_id == category_id]
     
-    def sort_houses_using_thematic_id(self, houses:List[HouseModel], thematic_id:int)-> List[HouseModel]:
+    def sort_houses_by_thematic_id(self, houses:List[HouseModel], thematic_id:int)-> List[HouseModel]:
         return [house for house in houses if house.thematic_id == thematic_id]
     
     def sort_houses_by_nbr_person(self, houses:List[HouseModel], person_nbr:int)-> List[HouseModel]:
@@ -64,9 +64,9 @@ class ResearchService:
     def find_available_houses(self, research_object:Research)->List[HouseModel]:
         houses = self.house_repository.get_all()
 
-        cat_sorted_houses =  self.sort_houses_using_category_id(houses=houses, category_id =research_object.category_id)
+        cat_sorted_houses =  self.sort_houses_by_category_id(houses=houses, category_id =research_object.category_id)
 
-        cat_them_sorted_houses =  self.sort_houses_using_thematic_id(houses=cat_sorted_houses, thematic_id=research_object.thematic_id)
+        cat_them_sorted_houses =  self.sort_houses_by_thematic_id(houses=cat_sorted_houses, thematic_id=research_object.thematic_id)
 
         cat_them_np_sorted_houses = self.sort_houses_by_nbr_person(houses=cat_them_sorted_houses, person_nbr=research_object.person_nbr)
 

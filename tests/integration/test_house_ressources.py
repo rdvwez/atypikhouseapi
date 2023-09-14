@@ -171,5 +171,15 @@ def test_create_house_with_bad_acess(client, init_database, access_customer_toke
     response = client.post("/api/house", json=new_house, headers={"Authorization": f"Bearer {access_customer_token}"})
     assert response.status_code == 403
 
+def test_houses_filter(client,init_database):
+    research_data = {
+    "category_id": 1,
+    "thematic_id": 1,
+    "city": "Brest"
+    }
+    response = client.post("/api/house/filter", json=research_data, )
+
+    assert response.status_code == 201
+    assert response.json == [{'area': 8, 'category': {'id': 1, 'libelle': 'bulle'}, 'description': 'Good first house', 'id': 1, 'images': [{'basename': 'front.jpg', 'extension': '.jpg', 'id': 1, 'is_avatar': False, 'path': '/media/house/', 'size': 34, 'type_mime': 'image/jpeg', 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}}, {'basename': 'deletion_test_image.jpg', 'extension': '.jpg', 'id': 3, 'is_avatar': False, 'path': 'fixtures/medias/deletion_test_image.jpg', 'size': 54881, 'type_mime': 'image/jpeg', 'user': {'firstname': 'Jannete', 'id': '2', 'name': 'Dhoe'}}], 'libelle': 'first house', 'parking_distance': 3, 'person_number': 2, 'power': True, 'price': 50, 'thematic': {'id': 1, 'libelle': 'romantique'}, 'user': {'firstname': 'Jannete', 'name': 'Dhoe'}, 'water': True}]
 
 
