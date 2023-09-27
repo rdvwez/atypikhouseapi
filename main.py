@@ -3,6 +3,7 @@ import logging
 
 from flask import Flask, jsonify, render_template
 from flask_smorest import Api
+from flask_cors import CORS, cross_origin
 # from flask_restful_swagger_3 import Api
 
 from flask_jwt_extended import JWTManager
@@ -29,6 +30,9 @@ from app.research.ressources import blp as ResearchBlueprint
 
 def create_app(db_url=None):
     app = Flask(__name__, instance_relative_config=True)
+
+    # Initialisez CORS avec votre application Flask
+    CORS(app, origins= "http://localhost:5001")
 
     #TODO move the load_dotenv function before calling  'oauth'
     # load_dotenv(".env", verbose=True)
