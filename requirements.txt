@@ -37,3 +37,4 @@ freezegun
 time-machine
 pytest-ordering
 Flask-Reuploaded
+Flask-CORS
