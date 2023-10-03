@@ -32,7 +32,7 @@ def create_app(db_url=None):
     app = Flask(__name__, instance_relative_config=True)
 
     # Initialisez CORS avec votre application Flask
-    CORS(app, origins= "http://localhost:5001")
+    CORS(app, ressources={r"/api/*":{"origins": "*"}} )
 
     #TODO move the load_dotenv function before calling  'oauth'
     # load_dotenv(".env", verbose=True)
