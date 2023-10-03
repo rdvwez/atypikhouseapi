@@ -165,9 +165,26 @@ class UserConfirm(MethodView):
         Args:
             user_id (int): Id for user, confirming his accout
 
-        Returns: Senf the confirm email
+        Returns: Send the confirm email
         """
         return self.user_service.confirm_user(user_id)
+
+@blp.route("/user/me")
+class CurrentUser(MethodView):
+
+    def __init__(self):
+        self.user_service = UserService()
+
+    @jwt_required(fresh=True)
+    @blp.response(200, UserSchema)
+    @blp.doc(tags=['Users'], security=[{}])
+    def get(self):
+        """Get current user
+
+
+        Returns: A current user object
+        """
+        return self.user_service.get_current_uer()
 
 @blp.route("/user/password")
 class SetPassword(MethodView):

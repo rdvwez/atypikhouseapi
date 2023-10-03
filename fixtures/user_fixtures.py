@@ -48,8 +48,8 @@ class UserFixtures:
                 phone_number = self.fake.phone_number(),
                 email = lambda_email,
                 password = pbkdf2_sha256.hash("password"),
-                is_customer = True if role == "user" else False,
-                is_owner = True if role == "owner" else False,
+                is_customer = True
+                is_owner = True if role == "owner" or role == "admin" else False,
                 is_admin = True if role == "admin" else False,
                 birth_date = self.fake.date_of_birth(),
                 gender = self.fake.boolean(chance_of_getting_true=50)
