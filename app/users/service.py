@@ -3,6 +3,7 @@ from typing import Dict
 import traceback
 import smtplib
 import os
+from datetime import timedelta
 
 from requests import Response, post
 from flask import abort, render_template, make_response, redirect, request, url_for
@@ -123,16 +124,16 @@ class UserService:
                 additional_claims = {"id": user.id, "is_customer": user.is_customer, "is_owner":user.is_owner, "is_admin":user.is_admin}
                 # additional_claims = {"is_customer": user.is_customer, "is_owner":user.is_owner, "is_admin":user.is_admin}
                 access_token = create_access_token(identity=user.id, additional_claims=additional_claims, fresh=True)
-                # refresh_token = create_refresh_token(identity=user.id)
+                refresh_token = create_refresh_token(identity=user.id, additional_claims=additional_claims)
             
-                return {"access_token":access_token}
-                # return {"access_token":access_token, "refresh_token":refresh_token}
+                # return {"access_token":access_token}
+                return {"access_token":access_token, "refresh_token":refresh_token}
             return {"message": f"You have not confirme registration, please check your email <{user.firstname}>."}, 400
         
         abort(401, "invalid credentieals.")
         
     @admin_required
-    def get_user_by_id(self, user_id):
+    def get_user_by_id(self, user_id)-> UserModel:
         return self.user_repository.get_user_by_id(user_id)
 
     @admin_required
