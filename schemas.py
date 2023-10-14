@@ -112,6 +112,11 @@ class UserSchema(PlainUserSchema):
     values = fields.List(fields.Nested(lambda: PlainValueSchema()), dump_only = True)
     images = fields.List(fields.Nested(lambda: ImageSchema()), dump_only = True)
 
+class UserLoginSchema(Schema):
+    access_token = fields.Str()
+    refresh_token = fields.Str()
+class UserLogoutSchema(Schema):
+    message = fields.Str()
 class UserLimitedSchema(Schema):
     id = fields.Str(dump_only=True)
     firstname = fields.Str(metadata= {'require': False})

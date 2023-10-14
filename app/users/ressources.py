@@ -4,9 +4,9 @@ from flask_smorest import Blueprint
 from flask_jwt_extended import jwt_required
 
 from app.users.service import UserService
-from app.libs.decorators import admin_required
+from app.libs.decorators import owner_required, admin_required, customer_required
 from app.users.models import UserModel
-from schemas import UserSchema, UserRegisterSchema, UserPasswordSetSchema
+from schemas import UserSchema, UserRegisterSchema, UserPasswordSetSchema, UserLoginSchema, UserLogoutSchema
 
 
 
@@ -40,6 +40,7 @@ class UserLogin(MethodView):
         self.user_service = UserService()
     
     @blp.arguments(UserRegisterSchema)
+    @blp.response(200, UserLoginSchema)
     @blp.doc(tags=['Users'], security=[{}])
     def post(self, credentials):
         """Log in Route
@@ -58,6 +59,8 @@ class UserLogout(MethodView):
         self.user_service = UserService()
 
     @jwt_required()
+    @blp.response(200, UserLogoutSchema)
+    @blp.doc(tags=['Users'], security=[{}])
     def get(self):
         """logout route
 
@@ -73,6 +76,8 @@ class TokeRefresh(MethodView):
         self.user_service = UserService()
 
     @jwt_required()
+    @blp.response(200, UserLoginSchema)
+    @blp.doc(tags=['Users'], security=[{}])
     def get(self):
         """Refresh Token
 
@@ -87,7 +92,8 @@ class User(MethodView):
     def __init__(self):
         self.user_service = UserService()
 
-    @jwt_required() #peret de securiser la route, il faut avoir le token pour y acceder
+    @jwt_required()
+    @blp.doc(tags=['Users'], security=[{}])
     @blp.response(200, UserSchema)
     def get(self, user_id):
         """get user
