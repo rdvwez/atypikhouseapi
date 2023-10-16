@@ -75,9 +75,9 @@ class TokeRefresh(MethodView):
     def __init__(self):
         self.user_service = UserService()
 
-    @jwt_required()
+    # @jwt_required()
     @blp.response(200, UserLoginSchema)
-    @blp.doc(tags=['Users'], security=[{}])
+    # @blp.doc(tags=['Users'], security=[{}])
     def get(self):
         """Refresh Token
 
