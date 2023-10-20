@@ -3,6 +3,7 @@ from typing import Dict
 import traceback
 import smtplib
 import os
+from datetime import timedelta
 
 from requests import Response, post
 from flask import abort, render_template, make_response, redirect, request, url_for
@@ -89,7 +90,10 @@ class UserService:
     #     html = f'<html>Please click the link to confirm your registration: <a href="{link}">{link}</a></html>'
     #     return self.mailgun.send_email(email=[email], subject=subject, text=text, html=html)
     
-    
+    def get_current_uer(self)-> UserModel:
+        curent_user_id = get_jwt_identity()
+        return self.user_repository.get_user_by_id(curent_user_id)
+
     def register(self, user_data):
         if self.user_repository.get_user_by_email_or_username(user_data):
             abort(409, message="A user with that email or username already exists")
@@ -117,17 +121,19 @@ class UserService:
             if user.is_activated:
 
             # user.is_authenticated = True
-                additional_claims = {"is_customer": user.is_customer, "is_owner":user.is_owner, "is_admin":user.is_admin}
+                additional_claims = {"id": user.id, "is_customer": user.is_customer, "is_owner": user.is_owner, "is_admin": user.is_admin}
+                # additional_claims = {"is_customer": user.is_customer, "is_owner":user.is_owner, "is_admin":user.is_admin}
                 access_token = create_access_token(identity=user.id, additional_claims=additional_claims, fresh=True)
-                refresh_token = create_refresh_token(identity=user.id)
+                refresh_token = create_refresh_token(identity=user.id, additional_claims=additional_claims)
             
+                # return {"access_token":access_token}
                 return {"access_token":access_token, "refresh_token":refresh_token}
             return {"message": f"You have not confirme registration, please check your email <{user.firstname}>."}, 400
         
         abort(401, "invalid credentieals.")
         
     @admin_required
-    def get_user_by_id(self, user_id):
+    def get_user_by_id(self, user_id)-> UserModel:
         return self.user_repository.get_user_by_id(user_id)
 
     @admin_required
@@ -147,8 +153,8 @@ class UserService:
     def refresh_token(self):
         # curent_user = get_jwt().get("sub") même chose que le ligne qui suit, permet de retourner le cuurent user 
         # elle etourne un NONE s'il n'y a pas de current user
-        curent_user = get_jwt_identity()
-        new_token = create_access_token(identity=curent_user, fresh=False)
+        curent_user_id = get_jwt_identity()
+        new_token = create_access_token(identity=curent_user_id, fresh=False)
         # on ne peut que rafrechir le token une seule foi, voir ci dessous
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)

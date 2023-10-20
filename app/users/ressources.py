@@ -6,7 +6,7 @@ from flask_jwt_extended import jwt_required
 from app.users.service import UserService
 from app.libs.decorators import admin_required
 from app.users.models import UserModel
-from schemas import UserSchema, UserRegisterSchema, UserPasswordSetSchema
+from schemas import UserSchema, UserRegisterSchema, UserPasswordSetSchema, UserLoginSchema, UserRefreshTokenSchema
 
 
 
@@ -40,6 +40,7 @@ class UserLogin(MethodView):
         self.user_service = UserService()
     
     @blp.arguments(UserRegisterSchema)
+    @blp.response(200, UserLoginSchema)
     @blp.doc(tags=['Users'], security=[{}])
     def post(self, credentials):
         """Log in Route
@@ -73,6 +74,8 @@ class TokeRefresh(MethodView):
         self.user_service = UserService()
 
     @jwt_required()
+    @blp.response(200, UserRefreshTokenSchema)
+    @blp.doc(tags=['Users'], security=[{}])
     def get(self):
         """Refresh Token
 
@@ -188,3 +191,20 @@ class SetPassword(MethodView):
             _type_: The updated user
         """
         return self.user_service.set_password(user_data)
+    
+@blp.route("/user/me")
+class CurrentUser(MethodView):
+
+    def __init__(self):
+        self.user_service = UserService()
+
+    @jwt_required(fresh=True)
+    @blp.response(200, UserSchema)
+    @blp.doc(tags=['Users'], security=[{}])
+    def get(self):
+        """Get current user
+
+
+        Returns: A current user object
+        """
+        return self.user_service.get_current_uer()    

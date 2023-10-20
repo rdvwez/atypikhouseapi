@@ -107,6 +107,12 @@ class UserRegisterSchema(Schema):
 class UserPasswordSetSchema(Schema):
     password = fields.Str(metadata= {'require': True}, load_only =True)
 
+class UserLoginSchema(Schema):
+    access_token = fields.Str()
+    refresh_token = fields.Str()
+class UserRefreshTokenSchema(Schema):
+    access_token = fields.Str()
+
 class UserSchema(PlainUserSchema):
     houses = fields.List(fields.Nested(lambda: PlainHouseSchema()), dump_only = True)
     values = fields.List(fields.Nested(lambda: PlainValueSchema()), dump_only = True)
