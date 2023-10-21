@@ -121,7 +121,7 @@ class UserService:
             if user.is_activated:
 
             # user.is_authenticated = True
-                additional_claims = {"id": user.id, "is_customer": user.is_customer, "is_owner":user.is_owner, "is_admin":user.is_admin}
+                additional_claims = {"id": user.id, "is_customer": user.is_customer, "is_owner": user.is_owner, "is_admin": user.is_admin}
                 # additional_claims = {"is_customer": user.is_customer, "is_owner":user.is_owner, "is_admin":user.is_admin}
                 access_token = create_access_token(identity=user.id, additional_claims=additional_claims, fresh=True)
                 refresh_token = create_refresh_token(identity=user.id, additional_claims=additional_claims)
@@ -153,8 +153,8 @@ class UserService:
     def refresh_token(self):
         # curent_user = get_jwt().get("sub") même chose que le ligne qui suit, permet de retourner le cuurent user 
         # elle etourne un NONE s'il n'y a pas de current user
-        curent_user = get_jwt_identity()
-        new_token = create_access_token(identity=curent_user, fresh=False)
+        curent_user_id = get_jwt_identity()
+        new_token = create_access_token(identity=curent_user_id, fresh=False)
         # on ne peut que rafrechir le token une seule foi, voir ci dessous
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)

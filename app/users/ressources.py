@@ -6,7 +6,7 @@ from flask_jwt_extended import jwt_required
 from app.users.service import UserService
 from app.libs.decorators import owner_required, admin_required, customer_required
 from app.users.models import UserModel
-from schemas import UserSchema, UserRegisterSchema, UserPasswordSetSchema, UserLoginSchema, UserLogoutSchema
+from schemas import UserSchema, UserRegisterSchema, UserPasswordSetSchema, UserLoginSchema, UserRefreshTokenSchema
 
 
 
@@ -59,8 +59,8 @@ class UserLogout(MethodView):
         self.user_service = UserService()
 
     @jwt_required()
-    @blp.response(200, UserLogoutSchema)
-    @blp.doc(tags=['Users'], security=[{}])
+    # @blp.response(200, UserLogoutSchema)
+    # @blp.doc(tags=['Users'], security=[{}])
     def get(self):
         """logout route
 
@@ -75,8 +75,8 @@ class TokeRefresh(MethodView):
     def __init__(self):
         self.user_service = UserService()
 
-    # @jwt_required()
-    @blp.response(200, UserLoginSchema)
+    @jwt_required()
+    @blp.response(200, UserRefreshTokenSchema)
     # @blp.doc(tags=['Users'], security=[{}])
     def get(self):
         """Refresh Token
@@ -93,7 +93,7 @@ class User(MethodView):
         self.user_service = UserService()
 
     @jwt_required()
-    @blp.doc(tags=['Users'], security=[{}])
+    # @blp.doc(tags=['Users'], security=[{}])
     @blp.response(200, UserSchema)
     def get(self, user_id):
         """get user
@@ -183,7 +183,7 @@ class CurrentUser(MethodView):
 
     @jwt_required(fresh=True)
     @blp.response(200, UserSchema)
-    @blp.doc(tags=['Users'], security=[{}])
+    # @blp.doc(tags=['Users'], security=[{}])
     def get(self):
         """Get current user
 
@@ -211,3 +211,4 @@ class SetPassword(MethodView):
             _type_: The updated user
         """
         return self.user_service.set_password(user_data)
+
