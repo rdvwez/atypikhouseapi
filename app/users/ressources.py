@@ -71,11 +71,12 @@ class UserLogout(MethodView):
 
 
 @blp.route("/refresh")
-class TokeRefresh(MethodView):
+class TokenRefresh(MethodView):
     def __init__(self):
         self.user_service = UserService()
 
-    @jwt_required()
+    # @jwt_required()
+    @jwt_required(refresh=True)
     @blp.response(200, UserRefreshTokenSchema)
     # @blp.doc(tags=['Users'], security=[{}])
     def get(self):
@@ -135,7 +136,7 @@ class UserList(MethodView):
         Returns:
             dict: Liste of user
         """
-        # return "ERT"
+        
         return self.user_service.get_all_user()
 
     #TODO: Ne peut acceder à cette route l'admin connecté

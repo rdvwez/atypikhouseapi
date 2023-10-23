@@ -124,8 +124,11 @@ class UserService:
                 additional_claims = {"id": user.id, "is_customer": user.is_customer, "is_owner": user.is_owner, "is_admin": user.is_admin}
                 # additional_claims = {"is_customer": user.is_customer, "is_owner":user.is_owner, "is_admin":user.is_admin}
                 access_token = create_access_token(identity=user.id, additional_claims=additional_claims, fresh=True)
-                refresh_token = create_refresh_token(identity=user.id, additional_claims=additional_claims)
-            
+                refresh_token = create_refresh_token(identity=user.id)
+                user.refresh_token = refresh_token
+
+                self.user_repository.save(user)
+                self.user_repository.commit()
                 # return {"access_token":access_token}
                 return {"access_token":access_token, "refresh_token":refresh_token}
             return {"message": f"You have not confirme registration, please check your email <{user.firstname}>."}, 400
@@ -154,11 +157,21 @@ class UserService:
         # curent_user = get_jwt().get("sub") même chose que le ligne qui suit, permet de retourner le cuurent user 
         # elle etourne un NONE s'il n'y a pas de current user
         curent_user_id = get_jwt_identity()
-        new_token = create_access_token(identity=curent_user_id, fresh=False)
-        # on ne peut que rafrechir le token une seule foi, voir ci dessous
-        jti = get_jwt()["jti"]
-        BLOCKLIST.add(jti)
-        return {"access_token": new_token}, 200
+        user = self.user_repository.get_user_by_id(curent_user_id)
+        if user:
+            additional_claims = {"id": user.id, "is_customer": user.is_customer, "is_owner": user.is_owner, "is_admin": user.is_admin}
+            new_token = create_access_token(identity=curent_user_id, additional_claims=additional_claims, fresh=False)
+            refresh_token = create_refresh_token(identity=user.id)
+            user.refresh_token = refresh_token
+
+            self.user_repository.save(user)
+            self.user_repository.commit()
+            # on ne peut que rafrechir le token une seule foi, voir ci dessous
+            jti = get_jwt()["jti"]
+            BLOCKLIST.add(jti)
+            return {"access_token": new_token,"refresh_token": refresh_token }, 200
+        
+        abort(401, "user not found")
     
     @customer_required
     def logout(self):
