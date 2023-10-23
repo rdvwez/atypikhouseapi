@@ -17,6 +17,7 @@ class UserModel(db.Model):
     is_activated = db.Column(db.Boolean, default=False)
     birth_date = db.Column(db.Date, nullable=True)
     gender = db.Column(db.Boolean, nullable=True)
+    refresh_token = db.Column(db.Text, nullable=True)
     payment_methode = db.Column(db.String(30),nullable=True)
     stripe_custome_id = db.Column(db.String(20),nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now())
