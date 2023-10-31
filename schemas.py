@@ -107,16 +107,14 @@ class UserRegisterSchema(Schema):
 class UserPasswordSetSchema(Schema):
     password = fields.Str(metadata= {'require': True}, load_only =True)
 
-class UserLoginSchema(Schema):
-    access_token = fields.Str()
-    refresh_token = fields.Str()
 class UserRefreshTokenSchema(Schema):
     access_token = fields.Str()
+    refresh_token = fields.Str()
 
 class UserSchema(PlainUserSchema):
     houses = fields.List(fields.Nested(lambda: PlainHouseSchema()), dump_only = True)
     values = fields.List(fields.Nested(lambda: PlainValueSchema()), dump_only = True)
-    images = fields.List(fields.Nested(lambda: ImageSchema()), dump_only = True)
+    images = fields.List(fields.Nested(lambda: ImageLimitedSchema()), dump_only = True)
 
 class UserLoginSchema(Schema):
     access_token = fields.Str()
@@ -180,7 +178,7 @@ class HouseSchema(PlainHouseSchema):
     category = fields.Nested(lambda: CategoryLimitedSchema(), dump_only = True)
     user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
     thematic = fields.Nested(lambda: ThematicLimitedSchema(), dump_only = True)
-    images = fields.List(fields.Nested(lambda: ImageWithoutHousesSchema()), dump_only = True)
+    images = fields.List(fields.Nested(lambda: ImageLimitedSchema()), dump_only = True)
 
 class HouseCitiesSchema(Schema):
     city = fields.Str(metadata= {'require': False})
@@ -258,6 +256,8 @@ class PlainImageUpdateSchema(Schema):
     size = fields.Int(metadata= {'require': False})
     house_id = fields.Int(required = False, load_only = True)
 
+class ImageLimitedSchema(Schema):
+    path = fields.Str(metadata= {'require': False})
 class ImageSchema(PlainImageSchema):
     house_id = fields.Int(required = False, load_only = True)
     user_id = fields.Int(required = True, load_only = True)
