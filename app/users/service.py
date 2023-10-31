@@ -1,5 +1,5 @@
 import sys
-from typing import Dict
+from typing import Dict, Tuple
 import traceback
 import smtplib
 import os
@@ -112,7 +112,15 @@ class UserService:
             self.user_repository.delete(user)
             self.user_repository.commit()
             return {"message": str(res)}, 500
-        
+    
+    def generate_token(self, user: UserModel)-> Tuple[str, str]:
+        token_duration = timedelta(hours=1)
+        additional_claims = {"id": user.id, "is_customer": user.is_customer, "is_owner": user.is_owner, "is_admin": user.is_admin}
+        # additional_claims = {"is_customer": user.is_customer, "is_owner":user.is_owner, "is_admin":user.is_admin}
+        access_token = create_access_token(identity=user.id, additional_claims=additional_claims, fresh=True, expires_delta=token_duration)
+        refresh_token = create_refresh_token(identity=user.id)
+
+        return access_token, refresh_token
     
     def login(self, credentials:Dict[str,str]):
         user = self.user_repository.get_user_by_email_or_username(credentials)
@@ -121,10 +129,11 @@ class UserService:
             if user.is_activated:
 
             # user.is_authenticated = True
-                additional_claims = {"id": user.id, "is_customer": user.is_customer, "is_owner": user.is_owner, "is_admin": user.is_admin}
+                # additional_claims = {"id": user.id, "is_customer": user.is_customer, "is_owner": user.is_owner, "is_admin": user.is_admin}
                 # additional_claims = {"is_customer": user.is_customer, "is_owner":user.is_owner, "is_admin":user.is_admin}
-                access_token = create_access_token(identity=user.id, additional_claims=additional_claims, fresh=True)
-                refresh_token = create_refresh_token(identity=user.id)
+                # access_token = create_access_token(identity=user.id, additional_claims=additional_claims, fresh=True)
+                # refresh_token = create_refresh_token(identity=user.id)
+                access_token, refresh_token = self.generate_token(user)
                 user.refresh_token = refresh_token
 
                 self.user_repository.save(user)
@@ -159,9 +168,7 @@ class UserService:
         curent_user_id = get_jwt_identity()
         user = self.user_repository.get_user_by_id(curent_user_id)
         if user:
-            additional_claims = {"id": user.id, "is_customer": user.is_customer, "is_owner": user.is_owner, "is_admin": user.is_admin}
-            new_token = create_access_token(identity=curent_user_id, additional_claims=additional_claims, fresh=False)
-            refresh_token = create_refresh_token(identity=user.id)
+            new_token, refresh_token = self.generate_token(user)
             user.refresh_token = refresh_token
 
             self.user_repository.save(user)
