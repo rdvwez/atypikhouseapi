@@ -50,9 +50,9 @@ class PropertyList(MethodView):
     def __init__(self):
         self.property_service = PropertyService()
 
-
-    @blp.response(200, PropertySchema(many=True))
+    @jwt_required()
     @admin_required
+    @blp.response(200, PropertySchema(many=True))
     def get(self):
         return self.property_service.get_all_properties()
 
