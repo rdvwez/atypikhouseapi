@@ -49,6 +49,7 @@ class PlainPropertySchema(Schema):
     is_required = fields.Boolean(metadata= {'require': True})
 
 class PropertyUpdateSchema(Schema):
+    category_id = fields.Int()
     libelle = fields.Str()
     description = fields.Str()
     is_required = fields.Boolean()
@@ -69,9 +70,10 @@ class PlainValueSchema(Schema):
 
 class ValueUpdateSchema(Schema):
     libelle = fields.Str()
+    property_id = fields.Int()
 
 class ValueSchema(PlainValueSchema):
-    user_id = fields.Int(required = True, load_only = True)
+    # user_id = fields.Int(required = True, load_only = True)
     property_id = fields.Int(required = True, load_only = True)
     user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
     property_object = fields.Nested(lambda: PropertyLimitedSchema(), dump_only = True)
