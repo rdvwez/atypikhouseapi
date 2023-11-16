@@ -49,6 +49,7 @@ class PropertyService:
             try:
                 property_object = self.property_repository.get_property_by_id(property_id)
                 property_object.libelle= property_data.get("libelle", "Not define")
+                property_object.category_id= property_data.get("category_id", "Not define")
                 property_object.description = property_data.get("description","Not define")
                 self.property_repository.save(property_object)
                 self.property_repository.commit()

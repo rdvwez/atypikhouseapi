@@ -7,6 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import  get_jwt_identity
 
 from app.values.repository import ValueRepository
+from app.values.models import ValueModel
 from app.users.repository import UserRepository
 
 
@@ -32,7 +33,8 @@ class ValueService:
     def get_value_by_id(self, value_id):
             return self.value_repository.get_value_by_id(value_id)
 
-    def create_value(self, value):
+    def create_value(self, value: ValueModel):
+        value.user_id = get_jwt_identity()
         try:
             self.value_repository.save(value)
             self.value_repository.commit()
@@ -45,6 +47,7 @@ class ValueService:
             value = self.value_repository.get_value_by_id(value_id)
             
             value.libelle = value_data.get("libelle", "Not define")
+            value.property_id = value_data.get("property_id", "Not define")
             self.value_repository.save(value)
             self.value_repository.commit()
             return value
