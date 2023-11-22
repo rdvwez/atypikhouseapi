@@ -45,6 +45,7 @@ class ValueList(MethodView):
     def __init__(self):
         self.value_service = ValueService()
 
+    @jwt_required()
     @owner_required
     @blp.response(200, ValueSchema(many=True))
     def get(self):
