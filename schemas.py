@@ -183,7 +183,7 @@ class HouseSchema(PlainHouseSchema):
     images = fields.List(fields.Nested(lambda: ImageLimitedSchema()), dump_only = True)
 
 class HouseCitiesSchema(Schema):
-    city = fields.Str(metadata= {'require': False})
+    city = fields.Str(metadata= {'require': True})
 
 class HouseLimitedSchema(Schema):
     id = fields.Int(metadata= {'require': True}, dump_only=True)

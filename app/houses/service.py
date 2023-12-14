@@ -22,7 +22,7 @@ class HouseService:
          self.house_repository = HouseRepository()
          self.research_service = ResearchService()
 
-    def get_all_houses(self):
+    def get_all_houses(self) -> List[HouseModel]:
         """
         Return all houses
         :return: a list of House objects
@@ -74,15 +74,15 @@ class HouseService:
             return{"message":"house deleted"}, 204
         except:
             abort(404, f"A category with id:{house_id} doesn't exist")
+
     
-    def filter_houses(self, filters: Filters):
+    def filter_houses(self, filters: Filters) ->  List[HouseModel]:
         houses = self.house_repository.get_all()
 
-        cat_sorted_houses = self.research_service.sort_houses_by_category_id(houses=houses, category_id=filters.category_id)
+        filtered_houses = [house for house in houses if
+                           (house.category_id == filters.category_id) and
+                           ( house.thematic_id == filters.thematic_id) and
+                           ( house.city == filters.city)]
 
-        cat_them_sorted_houses = self.research_service.sort_houses_by_thematic_id(houses=cat_sorted_houses, thematic_id=filters.thematic_id)
-        
-        cat_them_houses_sortd_by_city = [house for house in cat_them_sorted_houses if house.city == filters.city]
-
-        return cat_them_houses_sortd_by_city
+        return filtered_houses
 

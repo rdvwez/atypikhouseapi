@@ -20,10 +20,10 @@ class Category(MethodView):
     def __init__(self):
         self.house_service = HouseService()
 
-    @jwt_required()
-    @owner_required
+    # @jwt_required()
+    # @owner_required
     @blp.response(200, HouseSchema)
-    @blp.doc(tags=['Houses'], security=[{'Bearer': []}])
+    @blp.doc(tags=['Houses'], security=[{}])
     def get(self, house_id:int):
         """Find houses by ID
 
@@ -76,13 +76,13 @@ class CityList(MethodView):
         self.house_service = HouseService()
 
     @blp.doc(tags=['Houses'], security=[{}])
-    @blp.response(200, HouseCitiesSchema(many=True))
+    @blp.response(200, )
     def get(self):
 
         """
         Returns list of city houses 
         """
-        cities = [ house.city for house in self.house_service.get_all_houses()]
+        cities = [house.city for house in self.house_service.get_all_houses()]
         return cities
     
 @blp.route("/house/filter")
