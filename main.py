@@ -90,13 +90,18 @@ def create_app(db_url=None):
     def invalid_torken_cillback(error):
         return (jsonify({"message":"Signature verification failled.", "error": "invalid token"}), 401,)
 
+    # has_run = False
     ####################################
     @app.before_first_request
     def create_tables_load_fixtures():
-        db.create_all()
-        app.logger.info('Database tables has been created with success')
-        load_all_fixtures()
-        app.logger.info('Fixtures have been loaded successfully')
+        global has_run
+        # if not has_run:
+        #     has_run = True
+        if not db.engine.has_table('categories'):
+            db.create_all()
+            app.logger.info('Database tables has been created with success')
+            load_all_fixtures()
+            app.logger.info('Fixtures have been loaded successfully')
     #####################################
 
 

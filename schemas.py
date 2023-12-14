@@ -156,6 +156,7 @@ class PlainHouseSchema(Schema):
     address = fields.Str(metadata= {'require': False})
     city = fields.Str(metadata= {'require': False})
     country = fields.Str(metadata= {'require': False})
+    created_at = fields.DateTime(metadata= {'require': True})
 
 class HouseUpdateSchema(Schema):
     libelle = fields.Str(metadata= {'require': True})
@@ -172,6 +173,8 @@ class HouseUpdateSchema(Schema):
     address = fields.Str(metadata= {'require': False})
     city = fields.Str(metadata= {'require': False})
     country = fields.Str(metadata= {'require': False})
+    created_at = fields.DateTime(metadata= {'require': True})
+    updated_at = fields.DateTime(metadata= {'require': True})
 
 class HouseSchema(PlainHouseSchema):
     category_id = fields.Int(required = True, load_only = True)
@@ -196,6 +199,7 @@ class HouseLimitedSchema(Schema):
     parking_distance = fields.Integer(metadata= {'nullable': False})
     description = fields.Str(metadata= {'require': False})
     user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
+    created_at = fields.DateTime(metadata= {'require': True})
 
 class HouseLimitedSchemaForResearch(Schema):
     id = fields.Int(metadata= {'require': True}, dump_only=True)
@@ -211,6 +215,7 @@ class HouseLimitedSchemaForResearch(Schema):
     category = fields.Nested(lambda: CategoryLimitedSchema(), dump_only = True)
     thematic = fields.Nested(lambda: ThematicLimitedSchema(), dump_only = True)
     images = fields.List(fields.Nested(lambda: ImageWithoutHousesSchema()), dump_only = True)
+    created_at = fields.DateTime(metadata= {'require': True})
 
 class HouseFilterSchema(Schema):
     category_id= fields.Int()
