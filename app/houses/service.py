@@ -11,9 +11,9 @@ from app.houses.models import HouseModel
 
 @dataclass
 class Filters:
-    category_id: int
-    thematic_id: int
-    city: str
+    category_id: int | None
+    thematic_id: int | None
+    city: str | None
 
 class HouseService:
 
@@ -80,9 +80,9 @@ class HouseService:
         houses = self.house_repository.get_all()
 
         filtered_houses = [house for house in houses if
-                           (house.category_id == filters.category_id) and
-                           ( house.thematic_id == filters.thematic_id) and
-                           ( house.city == filters.city)]
+                           ( filters.category_id is None or house.category_id == filters.category_id) and
+                           ( filters.thematic_id is None or house.thematic_id == filters.thematic_id) and
+                           ( filters.city is None or house.city == filters.city)]
 
         return filtered_houses
 
