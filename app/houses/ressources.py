@@ -92,8 +92,10 @@ class HouseFilter(MethodView):
         self.house_service = HouseService()
 
     @blp.arguments(HouseFilterSchema)
-    @blp.response(201, HouseLimitedSchemaForResearch(many=True))
+    @blp.response(201, HouseSchema(many=True))
     @blp.doc(tags=['Houses'], security=[{'Bearer': []}])
     def post(self, filter_data):
-        filters = Filters(**filter_data)
+        filters = Filters(category_id= filter_data.get("category_id", None),
+                          thematic_id=filter_data.get("thematic_id", None),
+                          city= filter_data.get("city", None))
         return self.house_service.filter_houses(filters)
