@@ -34,7 +34,7 @@ class  HouseFixtures:
                                 latitude = self.fake.latitude(),
                                 longitude = self.fake.longitude(),
                                 thematic_id = random.randint(1,16),
-                                user_id = random.randint(1,3),
+                                user_id = random.randint(1,2),
                                 address = self.fake.street_address(),
                                 city = self.fake.city(),
                                 country = self.fake.country())

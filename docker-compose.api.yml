@@ -6,7 +6,7 @@ networks:
 #         - subnet: 192.168.2.0/24
 services:
   api:
-    container_name: hatypikhouse_api
+    container_name: atypikhouse_api
     build:
       context: .
       dockerfile: Dockerfile
@@ -53,6 +53,17 @@ services:
       - .:/app
     depends_on:
       - db
+    
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+    networks:
+      - public
+    depends_on:
+      - db
+  
     # command: bash -c 'while ! nc -z db 3306; do sleep 1; done; python3 app.py'
   # test:
   #   build:
@@ -103,7 +114,7 @@ services:
   #   depends_on:
   #     - db
   db:
-    container_name: hatypikhouse_db
+    container_name: atypikhouse_db
     image: mysql:latest
     env_file:
       - .env

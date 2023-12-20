@@ -49,7 +49,7 @@ class Category(MethodView):
 
 
 @blp.route("/house")
-class CategoryList(MethodView):
+class HouseList(MethodView):
 
     @inject
     def __init__(self):
@@ -68,6 +68,23 @@ class CategoryList(MethodView):
     def post(self, house_data):
         house = HouseModel(**house_data)
         return self.house_service.create_house(house)
+    
+@blp.route("/house/byuserprofile")
+class HouseListByUserProfiled(MethodView):
+
+    @inject
+    def __init__(self):
+        self.house_service = HouseService()
+
+    @jwt_required()
+    @owner_required
+    @blp.doc(tags=['Houses'], security=[{'Bearer': []}])
+    @blp.response(200, HouseSchema(many=True))
+    def get(self):
+        """
+        Returns houses by user profile 
+        """
+        return self.house_service.get_houses_by_user_profile()
     
 @blp.route("/house/cities")
 class CityList(MethodView):

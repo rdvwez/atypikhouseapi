@@ -14,7 +14,7 @@ class UserModel(db.Model):
     is_customer = db.Column(db.Boolean, nullable=False, default=False)
     is_owner = db.Column(db.Boolean, nullable=False, default=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
-    is_activated = db.Column(db.Boolean, default=False)
+    is_activated = db.Column(db.Boolean, default=True)
     birth_date = db.Column(db.Date, nullable=True)
     gender = db.Column(db.Boolean, nullable=True)
     refresh_token = db.Column(db.Text, nullable=True)

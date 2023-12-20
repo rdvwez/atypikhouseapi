@@ -39,7 +39,7 @@ class UserFixtures:
                     lambda_first_name = self.fake.first_name_female()
                     
 
-                lambda_email = f"{lambda_first_name}.{lambda_name[0]}@hatypikhouse.fr"   
+                lambda_email = f"{lambda_first_name}.{lambda_name[0]}@atypikhouse.fr"   
 
             user = UserModel(
                 name = lambda_name,
