@@ -6,8 +6,8 @@ from typing import Union
 from flask import request, url_for, render_template
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+# from sendgrid import SendGridAPIClient
+# from sendgrid.helpers.mail import Mail
 
     # message = Mail(
     #     from_email='your-email@example.com',
