@@ -6,7 +6,7 @@ To use this API, you should first clone the  [repository](https://gitlab.com/Vwe
 
 You can  test this api in mode  Developpement mose: OnReadOnly and   OnWritable . 
 
-##  Use HatypikHouse api OnWritable  developpement mode:
+##  Use AtypikHouse api OnWritable  developpement mode:
 
 
 - Lunch docker compose on your tem: 
@@ -28,7 +28,7 @@ You can  test this api in mode  Developpement mose: OnReadOnly and   OnWritable 
 	
 
 Enjoye Code :blush: 
-##  Use HatypikHouse api OnReadOnly developpement mode:
+##  Use AtypikHouse api OnReadOnly developpement mode:
 
 comming soon .....
 
@@ -36,7 +36,7 @@ comming soon .....
 
 
 
-Three user rigth are defne in Hatypik House: Admin, Owner and Customer
+Three user rigth are defne in Atypik House: Admin, Owner and Customer
 See in the following the table summarizing the accesses to the different parts of the perimeter according to the rights of the users
 
 
@@ -267,7 +267,7 @@ See in the following the table summarizing the accesses to the different parts o
 
 
 <!-- - Connect database container with this commande:
-Open a new term window, and type the following command `sudo docker compose exec hatypik_house_api_python-db-1 bash`
+Open a new term window, and type the following command `sudo docker compose exec atypik_house_api_python-db-1 bash`
 
 Once connected on database container , do the followind things:
 

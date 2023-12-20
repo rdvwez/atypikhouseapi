@@ -104,14 +104,15 @@ class UserService:
 
         user = self.user_repository.get_user_by_email(email = user.email)
         # res = self.send_confirmation_mail( user_id = user.id, email = user.email)
-        res = send_confirmation_account_mail( user_id = user.id, email = user.email, subject="Registration confirmation", url_suffix="Users.UserConfirm")
-        if res is None:
-            return{"message": "Account created successfully, an email with the activation link has been sent to your emeil addresse, please check."}, 201
-        else:
+        return{"message": "Account created successfully, an email with the activation link has been sent to your emeil addresse, please check."}, 201
+        # res = send_confirmation_account_mail( user_id = user.id, email = user.email, subject="Registration confirmation", url_suffix="Users.UserConfirm")
+        # if res is None:
+        #     return{"message": "Account created successfully, an email with the activation link has been sent to your emeil addresse, please check."}, 201
+        # else:
 
-            self.user_repository.delete(user)
-            self.user_repository.commit()
-            return {"message": str(res)}, 500
+        #     self.user_repository.delete(user)
+        #     self.user_repository.commit()
+        #     return {"message": str(res)}, 500
     
     def generate_token(self, user: UserModel)-> Tuple[str, str]:
         token_duration = timedelta(hours=1)

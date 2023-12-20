@@ -4,6 +4,7 @@ from typing import List, Dict
 from injector import inject
 from sqlalchemy.exc import SQLAlchemyError
 from dataclasses import dataclass
+from flask_jwt_extended import get_jwt_identity
 
 from app.houses.repository import HouseRepository
 from app.research.service import ResearchService
@@ -85,4 +86,10 @@ class HouseService:
                            ( filters.city is None or house.city == filters.city)]
 
         return filtered_houses
+    
+    def get_houses_by_user_profile(self) -> List[HouseModel]:
+        curent_user_id = get_jwt_identity()
+        houses = self.get_all_houses()
+
+        return [house for house in houses if house.user_id == curent_user_id ]
 

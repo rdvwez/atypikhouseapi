@@ -3,19 +3,31 @@ import sys
 import smtplib
 import traceback
 from typing import Union
-from flask import request, url_for
+from flask import request, url_for, render_template
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
+    # message = Mail(
+    #     from_email='your-email@example.com',
+    #     to_emails='recipient@example.com',
+    #     subject='Test Email',
+    #     html_content='<strong>This is a test email</strong>')
 
-
+    # try:
+    #     sg = SendGridAPIClient('YOUR_SENDGRID_API_KEY')
+    #     response = sg.send(message)
+    #     return f"Email sent successfully! Response: {response.status_code}"
+    # except Exception as e:
+    #     return f"Error sending email: {str(e)}"
 
 def send_confirmation_account_mail(user_id:int, email:str, subject:str, url_suffix:str) -> Union[Exception, None]:
         # breakpoint()
         # print(os.environ.get('SMPT_SERVER'))
         link = request.url_root[0:-1] + url_for(url_suffix,user_id = user_id)
         text = f""""Hello!
-            we thank you for creating your account on Hatypik House,
+            We thank you for creating your account on Atypik House,
             Please click the link to confirm your registration: {link}"""
         # html = f'<html>Please click the link to confirm your registration: <a href="{link}">{link}</a></html>'
         

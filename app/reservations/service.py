@@ -105,7 +105,7 @@ class ReservationService:
                 reservation.status = "COMPLETED"
                 self.reservation_repository.save(reservation)
                 self.reservation_repository.commit()
-                send_email_response = send_reservation_confirmation_mail(email = curent_user.email, subject = "confirmation of your payment", amount = reservation.amount)
+                # send_email_response = send_reservation_confirmation_mail(email = curent_user.email, subject = "confirmation of your payment", amount = reservation.amount)
 
         except error.CardError as e:
             print("La carte est expirée, invalide ou si une autre erreur liée à la carte se produit.")
