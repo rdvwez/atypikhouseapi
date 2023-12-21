@@ -309,6 +309,15 @@ class ReservationSchema(PlainReservationSchema):
     user_id = fields.Int(required = False, load_only = True)
     house = fields.Nested(lambda: HouseLimitedSchema(), dump_only = True)
     user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
+class ReservationCreationSchema(Schema):
+    start_date = fields.DateTime(metadata= {'require': True})
+    end_date = fields.DateTime(metadata= {'require': True})
+    card_number = fields.Str(metadata= {'require': True})
+    card_exp_month = fields.Int(metadata= {'require': True})
+    card_exp_year = fields.Int(metadata= {'require': True})
+    cvc = fields.Str(metadata= {'require': True})
+    amount = fields.Float(metadata= {'require': True})
+    house_id = fields.Int(required = False, load_only = True)
 
 class ReservationLimitedSchema(Schema):
     id = fields.Int(dump_only=True)

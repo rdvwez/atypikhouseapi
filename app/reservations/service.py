@@ -72,12 +72,14 @@ class ReservationService:
         stripe_customer_id = create_stripe_customer(user_email)
         return payment_methode_id, stripe_customer_id
 
-    def create_reservation(self, reservation:ReservationModel):
+    def create_reservation(self, reservation_dict:Dict[str, str]):
         """
         Expected for token and a reservatins data from the request body
         construct an reservation and talk to the strip API to make a charge.
         """
         curent_user = self.user_repository.get_user_by_id(get_jwt_identity())
+
+        reservation = ReservationModel(user_id=curent_user.id, **reservation_dict)
 
         try:
             

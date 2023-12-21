@@ -8,7 +8,7 @@ from flask_jwt_extended import jwt_required
 from app.libs.decorators import owner_required, customer_required
 from app.reservations.models import ReservationModel
 from app.reservations.service import ReservationService
-from schemas import ReservationSchema, ReservationUpdateSchema
+from schemas import ReservationSchema, ReservationUpdateSchema, ReservationCreationSchema
 
 
 blp = Blueprint("Reservations","reservations",description="Operations on reservations", url_prefix="/api")
@@ -83,7 +83,7 @@ class ReservationList(MethodView):
         
     @jwt_required(fresh=True)
     @customer_required
-    @blp.arguments(ReservationSchema)
+    @blp.arguments(ReservationCreationSchema)
     @blp.response(201, ReservationSchema)
     # category_data contain the json wich is the validated fileds that the schamas requested
     def post(self, data):
@@ -91,8 +91,8 @@ class ReservationList(MethodView):
         Expected for token and a reservations data from the request body
         construct a reservation and talk to the strip API to make a charge.
         """
-        reservation = ReservationModel(**data)
+        # reservation = ReservationModel(**data)
         # category = CategoryModel(libelle = category_data.get("libelle", "Not Define"), show = category_data.get("libelle", "Not define"))
-        return self.reservation_service.create_reservation(reservation)
+        return self.reservation_service.create_reservation(data)
         # return reservation
     
