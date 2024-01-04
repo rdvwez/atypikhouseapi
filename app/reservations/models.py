@@ -29,6 +29,8 @@ class ReservationModel(db.Model):
     status = db.Column(Enum(ReservationStatus), default=ReservationStatus.PENDING, nullable=False)
     amount = db.Column(db.Float, nullable=False)
 
+    card_last_name = db.Column(db.String(255), nullable=False)
+    card_first_name = db.Column(db.String(255), nullable=False)
     card_number = db.Column(db.String(20), nullable=False)
     card_exp_month = db.Column(db.Integer, nullable=False)
     card_exp_year = db.Column(db.Integer, nullable=False)
