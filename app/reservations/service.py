@@ -71,7 +71,7 @@ class ReservationService:
     
     def format_reservation_dict_dates_from_str_to_datetime(self, reservation_dict:Dict[str, Any]) -> Dict[str, Any]:
         """
-        Formate les dates de début et de fin d'une réservation de string en dattime.
+        Formate les dates de début et de fin d'une réservation de string en datetime.
         :param reservation: Objet ReservationModel
         :return: Réservation avec les dates formatées
         """
@@ -95,24 +95,7 @@ class ReservationService:
         elif curent_user.is_customer:
             return [r for r in reservations if r.user_id == curent_user.id]
 
-
         return reservations
-    
-        # reservations  = self.reservation_repository.get_all()
-        # curent_user = self.user_repository.get_user_by_id(get_jwt_identity())
-        
-        # if curent_user.is_owner:
-        #     owner_reservation = []
-        #     for reservation in reservations:
-        #         house = self.houseRepository.get_house_by_id(reservation.house_id)
-        #         if house.user_id == curent_user.id:
-        #             owner_reservation.append(reservation)
-        #     return owner_reservation
-        
-        # elif curent_user.is_customer:
-        #     return [reservation for reservation in reservations if reservation.user_id == curent_user.id ]
-        
-        # return self.reservation_repository.get_all()
 
     def get_reservation_by_id(self, reservation_id: int) -> ReservationModel:
         # reservation =  self.reservation_repository.get_reservation_by_id(reservation_id)

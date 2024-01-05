@@ -21,5 +21,5 @@ class ResearchEngin(MethodView):
     @blp.arguments(ResearchSchema)
     @blp.response(201, HouseLimitedSchemaForResearch(many=True))
     def post(self, research_data):
-        research_object = Research(**research_data)
-        return self.research_service.find_available_houses(research_object)
+        # research_object = Research(**research_data)
+        return self.research_service.find_available_houses(research_data)
