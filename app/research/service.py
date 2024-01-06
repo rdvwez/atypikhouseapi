@@ -16,11 +16,11 @@ from app.reservations.service import ReservationService
 
 @dataclass
 class Research:
-    category_id: int
-    thematic_id: int
+    category_id: int | None
+    thematic_id: int | None
     start_date: datetime
     end_date: datetime
-    person_nbr: int
+    person_nbr: int | None
 
 class ResearchService:
     # @inject
@@ -65,30 +65,27 @@ class ResearchService:
             logging.error(e)
             return {"message": "Erreur de conversion de date"}, 422
         houses = self.house_repository.get_all()
+        reservations = self.reservation_service.get_all_reservations()
         current_date = datetime.now()
 
-        # Filtrer par catégorie
-        cat_sorted_houses = self.get_houses_by_category_id(houses,research_object.category_id)
-
-        # Filtrer par thématique
-        cat_them_sorted_houses = self.get_houses_by_thematic_id(cat_sorted_houses, research_object.thematic_id)
-
-        # Filtrer par nombre de personnes
-        cat_them_np_sorted_houses = self.get_houses_by_nbr_person(cat_them_sorted_houses, research_object.person_nbr)
+        filtered_houses = [house for house in houses if
+                           ( research_object.category_id is None or house.category_id == research_object.category_id) and
+                           ( research_object.thematic_id is None or house.thematic_id == research_object.thematic_id) and
+                           ( research_object.person_nbr is None or house.person_number == research_object.person_nbr)]
 
         # # Filtrer les maisons non disponibles
-        # non_available_house_ids = set(
-        #     house.id
-        #     for house in cat_them_np_sorted_houses
-        #     if research_object.start_date > house.end_date
-        #     and current_date < research_object.start_date  # Vérification supplémentaire
-        # )
+        non_available_house_ids = set(
+            rervation.house_id
+            for rervation in reservations
+            if research_object.start_date < rervation.end_date
+            and current_date > research_object.start_date  # Vérification supplémentaire
+        )
 
         # # Filtrer les maisons disponibles
-        # available_houses = [
-        #     sorted_house
-        #     for sorted_house in cat_them_np_sorted_houses
-        #     if sorted_house.id not in non_available_house_ids
-        # ]
+        available_houses = [
+            filtered_house
+            for filtered_house in filtered_houses
+            if filtered_house.id not in non_available_house_ids
+        ]
 
-        return cat_them_np_sorted_houses
+        return available_houses
