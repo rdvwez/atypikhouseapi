@@ -335,8 +335,8 @@ class ReservationLimitedSchema(Schema):
 class ResearchSchema(Schema):
     category_id= fields.Int()
     thematic_id= fields.Int()
-    start_date=fields.DateTime(metadata= {'require': True})
-    end_date = fields.DateTime(metadata= {'require': True})
+    start_date = fields.Str(format="%d/%m/%Y", required=True)
+    end_date = fields.Str(format="%d/%m/%Y", required=True)
     person_nbr= fields.Int()
 
 

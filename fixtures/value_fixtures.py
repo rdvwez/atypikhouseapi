@@ -17,7 +17,7 @@ class  ValueFixtures:
     def load(self) -> None:
         x = 0
         while x < 15:
-            value = ValueModel(libelle = self.fake.sentence(nb_words=2) , property_id = random.randint(1,10), user_id = random.randint(1,3))
+            value = ValueModel(libelle =f"{self.fake.sentence(nb_words=2)}{x}"  , property_id = random.randint(1,10), user_id = random.randint(1,3))
             # self.value_service.create_value(value)
             self.value_repository.save(value)
             self.value_repository.commit()

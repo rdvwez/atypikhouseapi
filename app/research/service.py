@@ -1,5 +1,6 @@
 from typing import List
 from datetime import datetime
+import logging
 from flask import abort 
 from typing import List, Dict, Tuple, Literal
 from injector import inject
@@ -8,37 +9,24 @@ from flask_jwt_extended import  get_jwt_identity
 from dataclasses import dataclass
 
 
-from app.categories.repository import CategoryRepository
-from app.thematics.repository import ThematicRepository
 from app.houses.repository import HouseRepository
 from app.houses.models import HouseModel
-from app.reservations.repository import ReservationRepository
 from app.reservations.models import ReservationModel
+from app.reservations.service import ReservationService
 
 @dataclass
 class Research:
-    category_id: int
-    thematic_id: int
+    category_id: int | None
+    thematic_id: int | None
     start_date: datetime
     end_date: datetime
-    person_nbr: int
+    person_nbr: int | None
 
 class ResearchService:
     # @inject
     def __init__(self):
-        self.category_repository = CategoryRepository()
-        self.thematic_repository = ThematicRepository()
         self.house_repository = HouseRepository()
-        self.reservation_repository = ReservationRepository()
-
-    def sort_houses_by_category_id(self, houses:List[HouseModel], category_id:int)-> List[HouseModel]:
-        return [house for house in houses if house.category_id == category_id]
-    
-    def sort_houses_by_thematic_id(self, houses:List[HouseModel], thematic_id:int)-> List[HouseModel]:
-        return [house for house in houses if house.thematic_id == thematic_id]
-    
-    def sort_houses_by_nbr_person(self, houses:List[HouseModel], person_nbr:int)-> List[HouseModel]:
-        return [house for house in houses if house.person_number == person_nbr]
+        self.reservation_service = ReservationService()
 
     def get_reservation(self, reservations: List[ReservationModel], house_id: int)-> ReservationModel:
         res = [reservation for reservation in reservations if reservation.house_id == house_id]
@@ -60,26 +48,44 @@ class ResearchService:
         return  matched_house_ids                
 
         # search_result = [sorted_house for sorted_house in cat_them_np_sorted_houses if house.id not in  matched_house_ids]
+    def get_houses_by_category_id(self, houses:List[HouseModel], category_id:int)-> List[HouseModel]:
+        return [house for house in houses if house.category_id == category_id]
+    
+    def get_houses_by_thematic_id(self, houses:List[HouseModel], thematic_id:int)-> List[HouseModel]:
+        return [house for house in houses if house.thematic_id == thematic_id]
+    
+    def get_houses_by_nbr_person(self, houses:List[HouseModel], person_nbr:int)-> List[HouseModel]:
+        return [house for house in houses if house.person_number >= person_nbr]
 
-    def find_available_houses(self, research_object:Research)->List[HouseModel]:
+    def find_available_houses(self, research_data: Dict[str, str]) -> List[HouseModel] | tuple[dict[str, str], Literal[422]]:
+        try:
+            research_object = Research(**self.reservation_service.format_reservation_dict_dates_from_str_to_datetime(research_data))
+        except ValueError as e:
+            logging.info('Erreur de conversion de date')
+            logging.error(e)
+            return {"message": "Erreur de conversion de date"}, 422
         houses = self.house_repository.get_all()
+        reservations = self.reservation_service.get_all_reservations()
+        current_date = datetime.now()
 
-        cat_sorted_houses =  self.sort_houses_by_category_id(houses=houses, category_id =research_object.category_id)
+        filtered_houses = [house for house in houses if
+                           ( research_object.category_id is None or house.category_id == research_object.category_id) and
+                           ( research_object.thematic_id is None or house.thematic_id == research_object.thematic_id) and
+                           ( research_object.person_nbr is None or house.person_number == research_object.person_nbr)]
 
-        cat_them_sorted_houses =  self.sort_houses_by_thematic_id(houses=cat_sorted_houses, thematic_id=research_object.thematic_id)
+        # # Filtrer les maisons non disponibles
+        non_available_house_ids = set(
+            rervation.house_id
+            for rervation in reservations
+            if research_object.start_date < rervation.end_date
+            and current_date > research_object.start_date  # Vérification supplémentaire
+        )
 
-        cat_them_np_sorted_houses = self.sort_houses_by_nbr_person(houses=cat_them_sorted_houses, person_nbr=research_object.person_nbr)
+        # # Filtrer les maisons disponibles
+        available_houses = [
+            filtered_house
+            for filtered_house in filtered_houses
+            if filtered_house.id not in non_available_house_ids
+        ]
 
-        completed_reservations = self.reservation_repository.get_reservations_by_status(status='completed')
-
-        reserved_house_ids = [reservation.house_id for reservation in completed_reservations]
-
-        non_available_house_ids = self.get_non_available_house_ids( 
-                                            cat_them_np_sorted_houses, 
-                                            reserved_house_ids,
-                                            research_object,
-                                            completed_reservations)
-                
-        available_houses = [sorted_house for sorted_house in  cat_them_np_sorted_houses if sorted_house.id not in non_available_house_ids]
-        
         return available_houses

@@ -92,4 +92,13 @@ class HouseService:
         houses = self.get_all_houses()
 
         return [house for house in houses if house.user_id == curent_user_id ]
+    
+    def get_houses_by_category_id(self, houses:List[HouseModel], category_id:int)-> List[HouseModel]:
+        return [house for house in houses if house.category_id == category_id]
+    
+    def get_houses_by_thematic_id(self, houses:List[HouseModel], thematic_id:int)-> List[HouseModel]:
+        return [house for house in houses if house.thematic_id == thematic_id]
+    
+    def get_houses_by_nbr_person(self, houses:List[HouseModel], person_nbr:int)-> List[HouseModel]:
+        return [house for house in houses if house.person_number == person_nbr]
 
