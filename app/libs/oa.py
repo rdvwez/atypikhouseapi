@@ -46,9 +46,9 @@ google = oauth.remote_app(
     access_token_method="POST",
     access_token_url='https://accounts.google.com/o/oauth2/token',
     authorize_url='https://accounts.google.com/o/oauth2/auth',
-    consumer_key= dc.GOOGLE_OAUTH_CLIENT_ID,
-    consumer_secret=dc.GOOGLE_OAUTH_CLIENT_SECRET,
-    request_token_params={'scope': 'email'}
+    consumer_key= '794179832332-3jkq8ia1ng9s4ej8q36c83umd05p6r1g.apps.googleusercontent.com',
+    consumer_secret='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',
+    request_token_params={'scope': ['email', 'profile']}
 )
 
 
