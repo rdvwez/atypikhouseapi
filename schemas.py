@@ -221,6 +221,9 @@ class HouseFilterSchema(Schema):
     category_id= fields.Int()
     thematic_id= fields.Int()
     city = fields.Str() 
+class CityListchema(Schema):
+    name= fields.Str()
+    photoUri = fields.Str() 
 
 ######################### images schemas#######################
 

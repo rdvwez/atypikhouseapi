@@ -1,3 +1,4 @@
+import logging
 from flask import g, request, url_for
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
@@ -33,29 +34,38 @@ class GithubLogin(MethodView):
 
 @blp.route("/login/google/authorized", endpoint="google_authorized")
 class GoogleAuthorized(MethodView):
+
     def __init__(self):
         self.user_repository = UserRepository()
-    
+
     def get(self):
         resp = google.authorized_response()
 
-        if resp is None:
+
+        if resp is None or resp.get('access_token') is None:
             return {
                 "error": request.args["error"],
-                "error_description": request.args["error_descripton"]
+                "error_description": request.args["error_description"]
             }
+        
+        # logging.info(request.args["error"])
+        # logging.info(request.args["error_description"])
+        # logging.info(resp.get('access_token'))
+
         user_info = google.get("userinfo")
+        # user = self.user_repository.get_user_by_email_or_username({"email": user_info.data.get("email")})
 
-        user = self.user_repository.get_user_by_email_or_username( {"email":user_info.data.get("email")})
-        if not user:
-            user =  UserModel(
-                email = user_info.data.get("email"),
-                password = None,
-            )
-        access_token = create_access_token(identity=user.id, fresh= True)
-        refresh_token = create_refresh_token(user.id)
+        # if not user:
+        #     user = UserModel(
+        #         email=user_info.data.get("email"),
+        #         password=None,
+        #     )
 
-        return {"access_token": access_token, "refresh_token":refresh_token}, 200
+        # access_token = create_access_token(identity=user.id, fresh=True)
+        # refresh_token = create_refresh_token(user.id)
+
+        # return {"access_token": access_token, "refresh_token": refresh_token}, 200
+        return user_info, 200
 
 @blp.route("/login/facebook/authorized", endpoint="facebook_authorized")
 class FacebookAuthorized(MethodView):

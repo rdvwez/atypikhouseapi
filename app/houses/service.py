@@ -1,4 +1,8 @@
+import logging
+import os
 from datetime import datetime
+import random
+import requests
 from flask import abort 
 from typing import List, Dict
 from injector import inject
@@ -15,6 +19,8 @@ class Filters:
     category_id: int | None
     thematic_id: int | None
     city: str | None
+
+SEARCH_PARAMS = {'query': 'city', 'client_id': os.environ.get('UNSPLASH_ACCESS_KEY')}
 
 class HouseService:
 
@@ -93,12 +99,27 @@ class HouseService:
 
         return [house for house in houses if house.user_id == curent_user_id ]
     
-    def get_houses_by_category_id(self, houses:List[HouseModel], category_id:int)-> List[HouseModel]:
-        return [house for house in houses if house.category_id == category_id]
-    
-    def get_houses_by_thematic_id(self, houses:List[HouseModel], thematic_id:int)-> List[HouseModel]:
-        return [house for house in houses if house.thematic_id == thematic_id]
-    
-    def get_houses_by_nbr_person(self, houses:List[HouseModel], person_nbr:int)-> List[HouseModel]:
-        return [house for house in houses if house.person_number == person_nbr]
+    def get_photos(self, cities: List[str])->Dict:
+        width, height = 400, 400
+        response = requests.get(os.environ.get('UNSPLASH_API_BASED_URL'), params=SEARCH_PARAMS)
+        data = response.json()
+        logging.debug(data)
+        logging.debug(data['urls'])
+    # Attribution aléatoire d'une image différente à chaque ville.
+        city_photos = {}
+        for city in cities:
+            # Assurez-vous que vous avez assez de photos dans la réponse, sinon ajustez cela en conséquence.
+            random_photo = random.choice(data)
+            photo_url = f"{random_photo['urls']['raw']}?w={width}&h={height}&fit=crop"
+            city_photos[city] = photo_url
+
+        return city_photos
+        
+    def get_cities_with_photos(self):
+        city_names = [house.city for house in self.get_all_houses()]
+        # city_photos = self.get_photos(city_names)
+
+        cities_with_photos = [{'name': city_name, 'photoUri': "https://random.imagecdn.app/300/300"} for city_name in city_names]
+
+        return cities_with_photos
 

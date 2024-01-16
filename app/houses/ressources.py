@@ -5,7 +5,7 @@ from injector import inject
 from flask_jwt_extended import jwt_required
 
 
-from schemas import HouseSchema, HouseUpdateSchema, HouseCitiesSchema, HouseFilterSchema, HouseLimitedSchemaForResearch
+from schemas import CityListchema, HouseSchema, HouseUpdateSchema, HouseCitiesSchema, HouseFilterSchema, HouseLimitedSchemaForResearch
 from app.houses.service import HouseService
 from app.houses.models import HouseModel
 from app.libs.decorators import owner_required
@@ -93,13 +93,13 @@ class CityList(MethodView):
         self.house_service = HouseService()
 
     @blp.doc(tags=['Houses'], security=[{}])
-    @blp.response(200, )
+    @blp.response(200, CityListchema(many=True))
     def get(self):
 
         """
         Returns list of city houses 
         """
-        cities = [house.city for house in self.house_service.get_all_houses()]
+        cities = self.house_service.get_cities_with_photos()
         return cities
     
 @blp.route("/house/filter")
