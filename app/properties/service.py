@@ -69,3 +69,7 @@ class PropertyService:
             except:
                 abort(404, message=f"A property with id:{property_id} doesn't exist")
         return{"message": "Access Denied"}, 403
+    
+    def get_properties_by_category_id(self, category_id:int)->List[PropertyModel]:
+        category_properties = self.property_repository.get_properties_by_category_id(category_id)
+        return category_properties

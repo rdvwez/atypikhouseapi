@@ -5,7 +5,7 @@ from injector import inject
 from flask_jwt_extended import jwt_required
 
 
-from schemas import CityListchema, HouseSchema, HouseUpdateSchema, HouseCitiesSchema, HouseFilterSchema, HouseLimitedSchemaForResearch
+from schemas import CityListchema, HouseSchema, HouseUpdateSchema, HouseCitiesSchema, HouseFilterSchema, HouseLimitedSchemaForResearch, HouseWithPropertiesSchema
 from app.houses.service import HouseService
 from app.houses.models import HouseModel
 from app.libs.decorators import owner_required
@@ -14,7 +14,7 @@ from app.houses.service import Filters
 blp = Blueprint("Houses",__name__,description="Operations on houses",url_prefix="/api")
 
 @blp.route("/house/<string:house_id>")
-class Category(MethodView):
+class House(MethodView):
 
     @inject
     def __init__(self):
@@ -22,7 +22,7 @@ class Category(MethodView):
 
     # @jwt_required()
     # @owner_required
-    @blp.response(200, HouseSchema)
+    @blp.response(200, HouseWithPropertiesSchema)
     @blp.doc(tags=['Houses'], security=[{}])
     def get(self, house_id:int):
         """Find houses by ID
@@ -56,7 +56,7 @@ class HouseList(MethodView):
         self.house_service = HouseService()
 
     @blp.doc(tags=['Houses'], security=[{}])
-    @blp.response(200, HouseSchema(many=True))
+    @blp.response(200, HouseWithPropertiesSchema(many=True))
     def get(self):
         return self.house_service.get_all_houses()
 
@@ -79,7 +79,7 @@ class HouseListByUserProfiled(MethodView):
     @jwt_required()
     @owner_required
     @blp.doc(tags=['Houses'], security=[{'Bearer': []}])
-    @blp.response(200, HouseSchema(many=True))
+    @blp.response(200, HouseWithPropertiesSchema(many=True))
     def get(self):
         """
         Returns houses by user profile 
@@ -109,7 +109,7 @@ class HouseFilter(MethodView):
         self.house_service = HouseService()
 
     @blp.arguments(HouseFilterSchema)
-    @blp.response(201, HouseSchema(many=True))
+    @blp.response(201, HouseWithPropertiesSchema(many=True))
     @blp.doc(tags=['Houses'], security=[{'Bearer': []}])
     def post(self, filter_data):
         filters = Filters(category_id= filter_data.get("category_id", None),

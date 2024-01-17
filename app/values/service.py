@@ -32,6 +32,9 @@ class ValueService:
 
     def get_value_by_id(self, value_id):
             return self.value_repository.get_value_by_id(value_id)
+    
+    def get_value_by_property_id_and_user_id(self, user_id:int, property_id:int)-> ValueModel:
+            return self.value_repository.get_value_by_property_id_and_user_id(user_id=user_id, property_id=property_id)
 
     def create_value(self, value: ValueModel):
         value.user_id = get_jwt_identity()

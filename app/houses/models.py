@@ -13,6 +13,7 @@ class HouseModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     libelle = db.Column(db.String(40), unique=True, nullable=False)
+    show = db.Column(db.Boolean, default=True)
     description = db.Column(db.Text, nullable=True)
     bedroom_number = db.Column(db.Integer, nullable=False)
     person_number = db.Column(db.Integer, nullable=False)

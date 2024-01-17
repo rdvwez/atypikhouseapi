@@ -149,6 +149,7 @@ class PlainHouseSchema(Schema):
     parking_distance = fields.Integer(metadata= {'nullable': False})
     area = fields.Integer(metadata= {'nullable': False})
     water = fields.Bool(required= True)
+    show = fields.Bool(required= True)
     power = fields.Bool(required= True)
     price = fields.Integer(metadata= {'require': False})
     latitude = fields.Float(required= True)
@@ -184,6 +185,19 @@ class HouseSchema(PlainHouseSchema):
     user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
     thematic = fields.Nested(lambda: ThematicLimitedSchema(), dump_only = True)
     images = fields.List(fields.Nested(lambda: ImageLimitedSchema()), dump_only = True)
+
+class PropertyValueMatchesSchema(Schema):
+    libelle = fields.Str(metadata= {'require': True})
+    value = fields.Str(metadata= {'require': True})
+class HouseWithPropertiesSchema(PlainHouseSchema):
+    category_id = fields.Int(required = True, load_only = True)
+    user_id = fields.Int(required = True, load_only = True)
+    thematic_id = fields.Int(required = True, load_only = True)
+    category = fields.Nested(lambda: CategoryLimitedSchema(), dump_only = True)
+    user = fields.Nested(lambda: UserLimitedSchema(), dump_only = True)
+    thematic = fields.Nested(lambda: ThematicLimitedSchema(), dump_only = True)
+    images = fields.List(fields.Nested(lambda: ImageLimitedSchema()), dump_only = True)
+    properties = fields.List(fields.Nested(lambda: PropertyValueMatchesSchema()), dump_only = True)
 
 class HouseCitiesSchema(Schema):
     city = fields.Str(metadata= {'require': True})
