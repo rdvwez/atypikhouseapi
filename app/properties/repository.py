@@ -1,6 +1,7 @@
 
 
 from app.db import db
+from typing import List
 
 from app.properties.models import PropertyModel
 
@@ -18,6 +19,8 @@ class PropertyRepository:
         property_object = PropertyModel.query.get_or_404(property_id)
         return property_object
     
+    def get_properties_by_category_id(self, category_id: int)->List[PropertyModel]:
+         return PropertyModel.query.filter(PropertyModel.category_id == category_id).all()
 
     def save(self, property_object):
         db.session.add(property_object)

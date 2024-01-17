@@ -14,6 +14,9 @@ class ValueRepository:
     def delete_all(self) -> None: # type: ignore
         ValueModel.query.delete()
 
+    def get_value_by_property_id_and_user_id(self, user_id:int, property_id:int)-> ValueModel:
+        return ValueModel.query.filter(ValueModel.property_id == property_id, ValueModel.user_id== user_id).first()
+
     def get_value_by_id(self, Value_id: int) -> ValueModel:
         value = ValueModel.query.get_or_404(Value_id)
         return value

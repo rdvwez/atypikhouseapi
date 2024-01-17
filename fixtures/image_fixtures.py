@@ -26,7 +26,7 @@ IMAGES_FOLDER = {
     14:"tini_house",
     15:"cabane_verticale",
     16:"tipi",
-    17:"bateu",
+    17:"bateau",
     18:"igloo"
     }
 

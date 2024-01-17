@@ -30,6 +30,7 @@ class  HouseFixtures:
             category_id = random.randint(1,18),
             house = HouseModel(libelle =f"{self.fake.word()}{random.randint(1,18)}{x}",
                                 description = self.fake.paragraph(nb_sentences=4) ,
+                                show = self.fake.boolean(chance_of_getting_true=50),
                                 category_id = category_id,
                                 bedroom_number = bedroom_and_person_number,
                                 person_number = bedroom_and_person_number,
