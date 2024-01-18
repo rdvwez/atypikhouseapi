@@ -282,6 +282,10 @@ class PlainImageUpdateSchema(Schema):
 
 class ImageLimitedSchema(Schema):
     path = fields.Str(metadata= {'require': False})
+class LimitedImageForHouseSchema(Schema):
+    path = fields.Str(metadata= {'require': False})
+    category = fields.Str(metadata= {'require': False})
+    
 class ImageSchema(PlainImageSchema):
     house_id = fields.Int(required = False, load_only = True)
     user_id = fields.Int(required = True, load_only = True)
