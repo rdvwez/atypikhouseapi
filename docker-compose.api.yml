@@ -51,6 +51,7 @@ services:
       - MAX_CONTENT_LENGTH=${MAX_CONTENT_LENGTH}
       - UNSPLASH_ACCESS_KEY=${UNSPLASH_ACCESS_KEY}
       - UNSPLASH_API_BASED_URL=${UNSPLASH_API_BASED_URL}
+      - FRONT_URL=${FRONT_URL}
     volumes:
       - .:/app
     depends_on:
