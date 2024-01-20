@@ -1,6 +1,5 @@
-import logging
 from app.images.models import ImageModel
-from flask import g, request, url_for, render_template
+from flask import g, request, url_for, render_template, redirect
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 from flask_jwt_extended import create_access_token, create_refresh_token
@@ -84,43 +83,10 @@ class GoogleAuthorized(MethodView):
                 "error_description": request.args["error_description"]
             }
         
-        # Vérifier que l'utilisateur a autorisé l'application
-        # if resp.get('error'):
-        #     return {
-        #         "error": resp.get('error'),
-        #         "error_description": resp.get('error_description')
-        #     }
-
-        # Stockez l'access_token dans l'utilisateur (g.user dans ce cas)
         g.access_token = (resp['access_token'], '')
 
         # Utilisez l'access_token pour récupérer des informations supplémentaires
         user_info = google.get("userinfo")
-        # try:
-        #     user_info = google.get("userinfo")
-        # except OAuthException as e:
-        #     logging.error(e)
-        #     print(f"OAuthException: {e}")
-
-        # Maintenant, user_info contient des informations telles que l'email
-        # email = user_info.data.get("email")
-
-        # Reste du code pour traiter les informations récupérées
-
-        # return {"email": email, "other_data": user_info.data}, 200
-        
-        # token = resp['access_token']
-        # token = google.authorize_access_token()
-        # resp = google.get('account/verify_credentials.json')
-        # resp.raise_for_status()
-        # resp = google.get('userinfo')
-        # resp = oauth.google.get('account/verify_credentials.json')
-        # resp.raise_for_status()
-        # profile = resp.json()
-        # logging.debug(resp)
-        # logging.error(user_info.data)
-        # print(user_info.data)
-        
 
         user = self.user_repository.get_user_by_email_or_username({"email": user_info.data.get("email")})
 
@@ -146,8 +112,10 @@ class GoogleAuthorized(MethodView):
         self.user_repository.save(user)
         self.user_repository.commit()
 
-        return {"access_token": access_token, "refresh_token": refresh_token}, 200
-        # return  user_info.data, 200
+        # return {"access_token": access_token, "refresh_token": refresh_token}, 200
+        # redirect_url = url_for(".nom de la vue engular", access_token=access_token, refresh_token=refresh_token, _external=True)
+        return redirect(f"{dc.FRONT_URL}redirect?access_token={access_token}&refresh_token={refresh_token}")
+
 
 @blp.route("/login/callback", endpoint="facebook_authorized")
 class FacebookAuthorized(MethodView):
