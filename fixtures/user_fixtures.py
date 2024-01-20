@@ -17,6 +17,7 @@ class UserFixtures:
     
     def load(self) -> None:
         counter = 1
+        gender = 0
         for role in self.roles:
 
             if role == "admin":
@@ -52,7 +53,7 @@ class UserFixtures:
                 is_owner = False if role == "user" else True,
                 is_admin = True if role == "admin" else False,
                 birth_date = self.fake.date_of_birth(),
-                gender = self.fake.boolean(chance_of_getting_true=50),
+                gender = gender,
                 is_activated = True
             )
 
@@ -60,7 +61,7 @@ class UserFixtures:
 
             basename=self.fake.file_name(category="image")
             avavtar = ImageModel(
-                                path= self.avatr_path.format('male') if role == "user" else self.avatr_path.format('female'), 
+                                path= self.avatr_path.format('male') if gender == 1 else self.avatr_path.format('female'), 
                                 basename=basename,
                                 is_avatar = True,
                                 extension=os.path.splitext(basename)[1], 
