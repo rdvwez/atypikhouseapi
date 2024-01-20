@@ -17,6 +17,7 @@ from app.houses.models import HouseModel
 from app.properties.service import PropertyService
 from app.properties.models import PropertyModel
 from app.values.service import ValueService
+from app.images.models import ImageModel
 
 @dataclass
 class Filters:
@@ -42,7 +43,7 @@ class HouseService:
             return value_model.libelle
         else:
             # Gérer le cas où la valeur est None, peut-être en renvoyant une valeur par défaut
-            return "Pas de valeur pour cette maison"
+            return "Non pas disponible pour cette hébergement"
     def match_properety_to_value(self, properties:List[PropertyModel], user_id:int)->List[dict[str, str]]:
         return [
             {
@@ -50,6 +51,11 @@ class HouseService:
                 "value": self.get_value_label(p.id, user_id)
             } 
             for p in properties]
+    def reformat_images(self,images: List[ImageModel], category:str)->List[Dict[str, str]]:
+        return [{
+            "path":image.path,
+            "category": category
+        } for image in images]
     
     def dictionarize_house_with_properties(self,house:HouseModel)  -> dict[str, Any]:
         return {

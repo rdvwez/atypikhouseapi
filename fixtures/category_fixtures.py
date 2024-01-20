@@ -9,9 +9,24 @@ from app.categories.repository import CategoryRepository
 class  CategoryFixtures:
 
     def __init__(self) -> None:
-        self.categories_wordings = ["cabane dans les arbres", "bulle", "cabane sur l'eau", "cabane","cabana sur pilotis", "chalet",  
-            "lov'nid", "roulotte", "cabane de trappeur","mirador", "phare", "maison de hobbit", "yourte",
-            "tini house", "cabane verticale", "tipi", "bateau", "igloo"]
+        self.categories_wordings = ["cabane dans les arbres", 
+                                    "bulle", 
+                                    "cabane sur l'eau", 
+                                    "cabane",
+                                    "cabana sur pilotis", 
+                                    "chalet",  
+                                    "lov'nid", 
+                                    "roulotte", 
+                                    "cabane de trappeur",
+                                    "mirador", 
+                                    "phare", 
+                                    "maison de hobbit", 
+                                    "yourte",
+                                    "tini house", 
+                                    "cabane verticale", 
+                                    "tipi", 
+                                    "bateau", 
+                                    "igloo"]
 
         self.fake = Faker(locale='fr_FR')
         # self.category_service = CategoryService()
