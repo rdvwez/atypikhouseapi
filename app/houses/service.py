@@ -43,7 +43,7 @@ class HouseService:
             return value_model.libelle
         else:
             # Gérer le cas où la valeur est None, peut-être en renvoyant une valeur par défaut
-            return "Pas de valeur pour cette maison"
+            return "Non pas disponible pour cette hébergement"
     def match_properety_to_value(self, properties:List[PropertyModel], user_id:int)->List[dict[str, str]]:
         return [
             {
