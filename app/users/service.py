@@ -168,18 +168,20 @@ class UserService:
         # elle etourne un NONE s'il n'y a pas de current user
         curent_user_id = get_jwt_identity()
         user = self.user_repository.get_user_by_id(curent_user_id)
-        if user:
-            new_token, refresh_token = self.generate_token(user)
-            user.refresh_token = refresh_token
-
-            self.user_repository.save(user)
-            self.user_repository.commit()
-            # on ne peut que rafrechir le token une seule foi, voir ci dessous
-            jti = get_jwt()["jti"]
-            BLOCKLIST.add(jti)
-            return {"access_token": new_token,"refresh_token": refresh_token }, 200
+        if not user:
+            abort(401, "user not found")
         
-        abort(401, "user not found")
+        new_token, refresh_token = self.generate_token(user)
+        user.refresh_token = refresh_token
+
+        self.user_repository.save(user)
+        self.user_repository.commit()
+        # on ne peut que rafrechir le token une seule foi, voir ci dessous
+        jti = get_jwt()["jti"]
+        BLOCKLIST.add(jti)
+        return {"access_token": new_token,"refresh_token": refresh_token }, 200
+        
+        
     
     @customer_required
     def logout(self):
