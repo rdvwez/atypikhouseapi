@@ -105,16 +105,16 @@ class GoogleAuthorized(MethodView):
             image = ImageModel(path=user_info.data.get("picture"), user_id=user.id)
             saved_image = self.image_service.create_image(image)
 
-        access_token, refresh_token = self.user_service.generate_token(user)
+        temp_token = self.user_service.generate_temp_token(user)
 
-        user.refresh_token = refresh_token
+        user.refresh_token = temp_token
 
         self.user_repository.save(user)
         self.user_repository.commit()
 
         # return {"access_token": access_token, "refresh_token": refresh_token}, 200
         # redirect_url = url_for(".nom de la vue engular", access_token=access_token, refresh_token=refresh_token, _external=True)
-        return redirect(f"{dc.FRONT_URL}redirect?access_token={access_token}&refresh_token={refresh_token}")
+        return redirect(f"{dc.FRONT_URL}auth/redirect?temp_token={temp_token}")
 
 
 @blp.route("/login/callback", endpoint="facebook_authorized")
