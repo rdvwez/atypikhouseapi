@@ -123,6 +123,13 @@ class UserService:
 
         return access_token, refresh_token
     
+    def generate_temp_token(self, user: UserModel)->  str:
+        token_duration = timedelta(minutes=5)
+        additional_claims = {"id": user.id}
+        temp_token = create_access_token(identity=user.id, additional_claims=additional_claims, fresh=True, expires_delta=token_duration)
+
+        return temp_token
+    
     def login(self, credentials:Dict[str,str]):
         user = self.user_repository.get_user_by_email_or_username(credentials)
         # breakpoint()

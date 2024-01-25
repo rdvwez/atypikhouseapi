@@ -86,6 +86,29 @@ class TokenRefresh(MethodView):
             str: new token
         """
         return self.user_service.refresh_token()
+@blp.route("/user/fullfil/login")
+class FullfilLogin(MethodView):
+    def __init__(self):
+        self.user_service = UserService()
+
+    @jwt_required(fresh=True)
+    @blp.response(200, UserRefreshTokenSchema)
+    def get(self):
+        """fullfil login after sso authentication
+        """
+        return self.user_service.refresh_token()
+
+    # # @jwt_required()
+    # @jwt_required(refresh=True)
+    # @blp.response(200, UserRefreshTokenSchema)
+    # # @blp.doc(tags=['Users'], security=[{}])
+    # def get(self):
+    #     """Refresh Token
+
+    #     Returns:
+    #         str: new token
+    #     """
+    #     return self.user_service.refresh_token()
 
 @blp.route("/user/<int:user_id>")
 class User(MethodView):
