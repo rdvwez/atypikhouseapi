@@ -112,8 +112,7 @@ class GoogleAuthorized(MethodView):
         self.user_repository.save(user)
         self.user_repository.commit()
 
-        # return {"access_token": access_token, "refresh_token": refresh_token}, 200
-        # redirect_url = url_for(".nom de la vue engular", access_token=access_token, refresh_token=refresh_token, _external=True)
+
         return redirect(f"{dc.FRONT_URL}auth/redirect?temp_token={temp_token}")
 
 
