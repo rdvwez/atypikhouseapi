@@ -6,7 +6,7 @@ from flask_jwt_extended import jwt_required
 # from injector import inject
 # from service import CategoryService
 
-from app.libs.decorators import admin_required
+from app.libs.decorators import admin_required, owner_required
 from app.properties.models import PropertyModel
 from app.properties.service import PropertyService
 from schemas import PropertySchema, PropertyUpdateSchema, HouseSchema
@@ -51,7 +51,7 @@ class PropertyList(MethodView):
         self.property_service = PropertyService()
 
     @jwt_required()
-    @admin_required
+    @owner_required
     @blp.response(200, PropertySchema(many=True))
     def get(self):
         return self.property_service.get_all_properties()
