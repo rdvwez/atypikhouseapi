@@ -11,7 +11,7 @@ class UserFixtures:
     def __init__(self) -> None:
         self.fake = Faker(locale='fr_FR')
         self.image_service = ImageService()
-        self.roles = ("admin", "user","owner" )
+        self.roles = ("admin", "owner", "user")
         self.user_service = UserService()
         self.avatr_path = "https://xsgames.co/randomusers/avatar.php?g={}"
     
